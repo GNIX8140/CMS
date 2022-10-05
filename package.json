@@ -1,22 +1,26 @@
 {
   "dependencies": {
+    "axios": "^0.26.1",
     "koa": "^2.13.4",
     "koa-body": "^5.0.0",
+    "koa-router": "^10.1.1",
     "koa-send": "^5.0.1",
     "koa-sslify": "^5.0.0",
+    "koa-static": "^5.0.0",
     "koa2-cors": "^2.0.6",
-    "moment": "^2.29.4",
+    "moment": "^2.29.2",
+    "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
     "node-schedule": "^2.1.0",
-    "nodemailer": "^6.7.8",
+    "nodemailer": "^6.7.3",
+    "pretty-bytes": "^5.6.0",
     "pretty-error": "^4.0.0",
-    "sequelize": "^6.21.6",
-    "underscore": "^1.13.4"
+    "sequelize": "^6.18.0",
+    "underscore": "^1.13.2"
   },
   "name": "ccms",
   "version": "1.0.0",
   "main": "app.js",
-  "devDependencies": {},
   "scripts": {
     "test": "test.js"
   },
