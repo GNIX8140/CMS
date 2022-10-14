@@ -12,7 +12,8 @@ module.exports = async (ctx, next) => {
         console.log(message, detail);
         ctx.body = {
             status: 500,
-            message: message
+            message: message,
+            detail: detail
         }
     }
     ctx.infoError = (message, detail) => {
