@@ -1,6 +1,6 @@
 "use strict"
 const { Sequelize } = require('sequelize');
-const mysql = new Sequelize('ccms', 'CCMS', 'Zxc1290754123', {
+const mysql = new Sequelize('cms', 'CMS', 'Zxc1290754123', {
     dialect: 'mysql',
     host: 'localhost',
     timezone: '+08:00',
@@ -9,7 +9,7 @@ const mysql = new Sequelize('ccms', 'CCMS', 'Zxc1290754123', {
         min: 0,
         qcquire: 30000,
         idle: 10000,
-        logging: false
-    }
+    },
+    // logging: false,
 });
 module.exports = mysql;

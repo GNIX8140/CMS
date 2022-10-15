@@ -27,16 +27,16 @@ function initialization() {
             .use(KoaCors({
                 origin: function (ctx) {
                     let url = ctx.header.origin;
-                    if (url == 'https://ccms.server-xing.top') {
+                    if (url == 'https://cms.server-xing.top') {
                         return '*';
                     }
-                    return 'https://ccms.server-xing.top';
+                    return 'https://cms.server-xing.top';
                 }
             }))
             .use(ResponseModule)
             .use(sslify())
             .use(IndexRouter.routes()).use(IndexRouter.allowedMethods())
-            .use(KoaStatic('/Nodejs/CCMS/Preview'))
+            .use(KoaStatic('/Nodejs/Public/CMS/Preview'))
         let scheduleTaskStatus = await schedule.start();
         if (!scheduleTaskStatus) {
             reject('服务初始化-错误');

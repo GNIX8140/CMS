@@ -23,7 +23,8 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "test": "test.js"
+    "serve": "nodemon app.js",
+    "test": "nodemon test.js"
   },
   "repository": {
     "type": "git",

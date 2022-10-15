@@ -112,12 +112,17 @@
 
 @media screen and (min-width: 1200px) {
   .main-logo-div {
-    padding: 10px 0px;
+    height: 60px;
   }
 
   .logo-div-img {
     width: 48px;
     height: 48px;
+  }
+
+  .logo-div-img:hover {
+    width: 56px;
+    height: 56px;
   }
 
   .logo-div-span {
@@ -126,13 +131,20 @@
     letter-spacing: 1px;
   }
 
+  .logo-div-span:hover {
+    font-size: 1.7em;
+  }
+
   .main-title-div {
-    padding: 160px 0px;
+    height: 420px;
   }
 
   .title-div-en {
     font-size: 2rem;
     letter-spacing: 2px;
+  }
+  .title-div-en:hover {
+    font-size: 2.1rem;
   }
 
   .title-div-cn {
@@ -140,16 +152,24 @@
     margin-top: 20px;
     letter-spacing: 1px;
   }
+  .title-div-cn:hover {
+    font-size: 1.9rem;
+  }
 
   .main-btn-group {
-    padding: 10px 0px;
+    height: 60px;
   }
 
   .btn-group-btn {
-    width: 216px;
-    height: 48px;
+    width: 11rem;
+    height: 2.6rem;
     font-size: 1rem;
     border-radius: 15px;
+  }
+  .btn-group-btn:hover {
+    width: 12rem;
+    height: 2.7rem;
+    font-size: 1.1rem
   }
 
   .btn-group-data {
@@ -176,18 +196,25 @@
 }
 
 .main-logo-div {
+  border: 1px solid red;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
 }
 
+.logo-div-img {
+  transition: all 0.1s linear 0s;
+}
+
 
 .logo-div-span {
   font-weight: 600;
+  transition: all 0.2s linear 0s;
 }
 
 .main-title-div {
+  border: 1px solid blue;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -196,13 +223,16 @@
 
 .title-div-en {
   font-weight: 700;
+  transition: all 0.2s linear 0s;
 }
 
 .title-div-cn {
   font-weight: 600;
+  transition: all 0.2s linear 0s;
 }
 
 .main-btn-group {
+  border: 1px solid purple;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -210,6 +240,9 @@
 }
 
 .btn-group-btn {
+  font-weight: 600;
+  letter-spacing: 1px;
   border: 1px solid rgba(134, 134, 134, 0.6);
+  transition: all 0.1s linear 0s;
 }
 </style>
