@@ -35,7 +35,8 @@ async function initialization() {
             }))
             .use(ResponseModule)
             .use(sslify())
-            .use(IndexRouter.routes()).use(IndexRouter.allowedMethods())
+            .use(IndexRouter.routes())
+            .use(IndexRouter.allowedMethods())
             .use(KoaStatic('/Nodejs/Public/CMS/Preview'))
         let scheduleTaskStatus = await schedule.start();
         if (!scheduleTaskStatus) {
@@ -60,4 +61,4 @@ initialization().then(res => {
         }
         console.log(`Server run at https://server-xing.top:${https_port}/`);
     });
-})
+});
