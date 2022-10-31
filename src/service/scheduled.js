@@ -9,6 +9,8 @@ const AreaModel = require('../model/area');
 const ClassroomModel = require('../model/classroom');
 const ClassroomTypeModel = require('../model/classroomType');
 const UserModel = require('../model/user');
+// 数据模型关联
+const RelationModel = require('../model/relation');
 // 数据库服务连接测试
 async function databaseConnectTest() {
     await sequelize.authenticate();
@@ -16,14 +18,16 @@ async function databaseConnectTest() {
 }
 // 数据模型同步-重建
 async function dataModelSyncForce() {
+    await sequelize.query("SET foreign_key_checks = 0");
     await AdminModel.sync({ force: true });
     await AreaModel.sync({ force: true });
     await ClassroomModel.sync({ force: true });
     await ClassroomTypeModel.sync({ force: true });
     await UserModel.sync({ force: true });
+    await sequelize.query("SET foreign_key_checks = 1");
     return true;
 }
-// 数据模型同步-更新字段
+// 数据模型同步-更新
 async function dataModelSyncAlert() {
     await AdminModel.sync({ alert: true, });
     await AreaModel.sync({ alert: true, });
@@ -40,9 +44,9 @@ async function start() {
         await databaseConnectTest();
         // 数据模型同步
         console.log("计划任务-数据模型同步");
-        await dataModelSyncForce();
+        // await dataModelSyncForce();
         // await dataModelSyncAlert();
-        return true
+        return true;
     } catch (err) {
         console.log(err);
         return false;

@@ -6,38 +6,39 @@ const sequelize = require('../database/sequelize');
 const ClassroomModel = sequelize.define('classroom', {
     // 教室信息表ID值
     classroom_id: {
-        type: DataTypes.INTEGER(20),
+        type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
     },
     // 教室所属区域
     classroom_area: {
-        type: DataTypes.CHAR(10),
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     // 教室编号
     classroom_number: {
-        type: DataTypes.STRING(20),
+        type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
     },
     // 教室类型
     classroom_type: {
-        type: DataTypes.STRING(10),
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     // 教室可容纳人数
     classroom_capacity: {
-        type: DataTypes.INTEGER(5),
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     // 教室申请权限
     classroom_authority: {
-        type: DataTypes.INTEGER(4),
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     // 教室使用状态
     classroom_status: {
-        type: DataTypes.STRING(10),
+        type: DataTypes.STRING,
         allowNull: false,
     }
 }, {

@@ -6,35 +6,38 @@ const sequelize = require('../database/sequelize');
 const UserModel = sequelize.define('user', {
     // 用户表ID值
     user_id: {
-        type: DataTypes.INTEGER(20),
+        type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
     },
     // 用户编号
     user_number: {
-        type: DataTypes.CHAR(20),
+        type: DataTypes.CHAR,
         allowNull: false,
+        unique: true,
     },
     // 用户邮箱地址
     user_email: {
-        type: DataTypes.STRING(50),
+        type: DataTypes.STRING,
+        unique: true,
     },
     // 用户登陆密码
     user_password: {
-        type: DataTypes.STRING(50),
+        type: DataTypes.STRING,
         allowNull: false,
     },
     // 用户真实姓名
     user_name: {
-        type: DataTypes.CHAR(10)
+        type: DataTypes.CHAR,
     },
     // 用户所属学院
     user_stitute: {
-        type: DataTypes.CHAR(20),
+        type: DataTypes.CHAR,
     },
-    // 用户权限等级
+    // 用户权限等级 (0: 学生; 1: 教师; 2: 组织管理人员; 3: 其他)
     user_authority: {
-        type: DataTypes.INTEGER(4),
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
     },
     // 用户头像链接
     user_portrait: {

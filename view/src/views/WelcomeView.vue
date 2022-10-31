@@ -21,12 +21,17 @@
 <style>
 @media screen and (max-width: 600px) {
   .main-logo-div {
-    padding: 6px 0px;
+    height: 40px;
   }
 
   .logo-div-img {
-    width: 32px;
-    height: 32px;
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+
+  .logo-div-img:hover {
+    width: 2.2rem;
+    height: 2.2rem;
   }
 
   .logo-div-span {
@@ -34,12 +39,20 @@
     margin-left: 10px;
   }
 
+  .logo-div-span:hover {
+    font-size: 0.9rem;
+  }
+
   .main-title-div {
-    padding: 120px 0px;
+    height: 500px;
   }
 
   .title-div-en {
     font-size: 1rem;
+  }
+
+  .title-div-en:hover {
+    font-size: 1.1rem;
   }
 
   .title-div-cn {
@@ -47,30 +60,45 @@
     margin-top: 10px;
   }
 
+  .title-div-cn:hover {
+    font-size: 0.9rem;
+  }
+
   .main-btn-group {
-    padding: 6px 0px;
+    height: 40px;
   }
 
   .btn-group-btn {
-    width: 108px;
-    height: 32px;
+    width: 6rem;
+    height: 2rem;
     font-size: 0.6rem;
     border-radius: 8px;
   }
 
+  .btn-group-btn:hover {
+    width: 7rem;
+    height: 2.1rem;
+    font-size: 0.7rem;
+  }
+
   .btn-group-data {
-    margin: 0px 8px;
+    margin: 0px 16px;
   }
 }
 
 @media screen and (min-width: 600px) and (max-width: 1200px) {
   .main-logo-div {
-    padding: 8px 0px;
+    height: 50px;
   }
 
   .logo-div-img {
-    width: 36px;
-    height: 36px;
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+
+  .logo-div-img:hover {
+    width: 2.8rem;
+    height: 2.8rem;
   }
 
   .logo-div-span {
@@ -79,13 +107,21 @@
     letter-spacing: 1px;
   }
 
+  .logo-div-span:hover {
+    font-size: 1.3rem;
+  }
+
   .main-title-div {
-    padding: 140px 0px;
+    height: 360px;
   }
 
   .title-div-en {
     font-size: 1.5rem;
     letter-spacing: 2px;
+  }
+
+  .title-div-en:hover {
+    font-size: 1.6rem;
   }
 
   .title-div-cn {
@@ -94,15 +130,25 @@
     letter-spacing: 1px;
   }
 
+  .title-div-cn:hover {
+    font-size: 1.4rem
+  }
+
   .main-btn-group {
-    padding: 8px 0px;
+    height: 50px;
   }
 
   .btn-group-btn {
-    width: 162px;
-    height: 36px;
+    width: 9rem;
+    height: 2.2rem;
     font-size: 0.8rem;
     border-radius: 12px;
+  }
+
+  .btn-group-btn:hover {
+    width: 10rem;
+    height: 2.3rem;
+    font-size: 0.9rem;
   }
 
   .btn-group-data {
@@ -116,13 +162,13 @@
   }
 
   .logo-div-img {
-    width: 48px;
-    height: 48px;
+    width: 3rem;
+    height: 3rem;
   }
 
   .logo-div-img:hover {
-    width: 56px;
-    height: 56px;
+    width: 3.4rem;
+    height: 3.4rem;
   }
 
   .logo-div-span {
@@ -143,6 +189,7 @@
     font-size: 2rem;
     letter-spacing: 2px;
   }
+
   .title-div-en:hover {
     font-size: 2.1rem;
   }
@@ -152,6 +199,7 @@
     margin-top: 20px;
     letter-spacing: 1px;
   }
+
   .title-div-cn:hover {
     font-size: 1.9rem;
   }
@@ -166,6 +214,7 @@
     font-size: 1rem;
     border-radius: 15px;
   }
+
   .btn-group-btn:hover {
     width: 12rem;
     height: 2.7rem;
@@ -196,7 +245,6 @@
 }
 
 .main-logo-div {
-  border: 1px solid red;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -214,7 +262,6 @@
 }
 
 .main-title-div {
-  border: 1px solid blue;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -232,7 +279,6 @@
 }
 
 .main-btn-group {
-  border: 1px solid purple;
   display: flex;
   flex-direction: row;
   justify-content: center;

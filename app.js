@@ -16,12 +16,12 @@ const ssl = {
     key: fs.readFileSync('./src/static/ssl/server-xing.top.key'),
     cert: fs.readFileSync('./src/static/ssl/server-xing.top.crt')
 }
-function initialization() {
-    return new Promise(async function (resolve, reject) {
+async function initialization() {
+    try {
         app.use(KoaBody({
             multipart: true,
             formidable: {
-                maxFileSize: 200 * 1024 * 1024
+                maxFileSize: 20 * 1024 * 1024
             }
         }))
             .use(KoaCors({
@@ -39,13 +39,20 @@ function initialization() {
             .use(KoaStatic('/Nodejs/Public/CMS/Preview'))
         let scheduleTaskStatus = await schedule.start();
         if (!scheduleTaskStatus) {
-            reject('服务初始化-错误');
+            throw Error('计划任务-错误');
         }
-        resolve('服务初始化成功');
-    });
+        return true;
+    } catch (err) {
+        console.log(err);
+        return false;
+    }
 }
 initialization().then(res => {
-    console.log(res);
+    if (!res) {
+        console.log('服务初始化-错误');
+        process.exit(1);
+    }
+    console.log('服务初始化-完成');
     https.createServer(ssl, app.callback()).listen(https_port, (err) => {
         if (err) {
             console.log('Server Start Error:' + err);
@@ -53,7 +60,4 @@ initialization().then(res => {
         }
         console.log(`Server run at https://server-xing.top:${https_port}/`);
     });
-}).catch(err => {
-    console.log(err);
-    process.exit(1);
-});
+})
