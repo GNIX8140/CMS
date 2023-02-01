@@ -7,7 +7,6 @@ const sslify = require("koa-sslify").default;
 const ResponseModule = require("./src/middleware/response");
 const fs = require("fs");
 const https = require("https");
-const Socket = require('socket.io');
 const IndexRouter = require("./src/router/index");
 const schedule = require("./src/service/scheduled");
 const app = new Koa();
@@ -62,5 +61,4 @@ initialization().then(res => {
         }
         console.log(`Server run at https://server-xing.top:${https_port}/`);
     });
-    // const io = new Socket(https);
 });

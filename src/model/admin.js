@@ -1,7 +1,7 @@
 // Sequelize DataTypes 数据模型
 const { DataTypes, CHAR } = require('sequelize');
 // 数据库
-const sequelize = require('../database/sequelize');
+const sequelize = require('../database/mysql');
 // 管理员 数据模型
 const AdminModel = sequelize.define('admin', {
     // 管理员表ID值

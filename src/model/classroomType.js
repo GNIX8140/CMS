@@ -1,7 +1,7 @@
 // Sequelize DataTypes 数据模型
 const { DataTypes, CHAR } = require('sequelize');
 // 数据库
-const sequelize = require('../database/sequelize');
+const sequelize = require('../database/mysql');
 // 教室类型 数据模型
 const ClassroomTypeModel = sequelize.define('classroomType', {
     // 教室类型表ID值

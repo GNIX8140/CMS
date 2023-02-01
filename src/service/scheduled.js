@@ -2,7 +2,7 @@
 // 引入node-schedule
 const schedule = require('node-schedule');
 // sequelize
-const sequelize = require('../database/sequelize');
+const sequelize = require('../database/mysql');
 // 数据模型
 const AdminModel = require('../model/admin');
 const AreaModel = require('../model/area');
