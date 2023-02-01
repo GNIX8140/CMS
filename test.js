@@ -6,6 +6,7 @@ const KoaStatic = require('koa-static')
 const sslify = require("koa-sslify").default;
 const ResponseModule = require("./src/middleware/response");
 const fs = require("fs");
+const os = require("os")
 const https = require("https");
 const IndexRouter = require("./src/router/index");
 const schedule = require("./src/service/scheduled");
@@ -13,8 +14,21 @@ const app = new Koa();
 const https_port = 8195;
 const prettyError = require("pretty-error").start();
 const ssl = {
-    key: fs.readFileSync('./src/static/ssl/server-xing.top.key'),
-    cert: fs.readFileSync('./src/static/ssl/server-xing.top.crt')
+    key: fs.readFileSync('./src/static/ssl/cert.key'),
+    cert: fs.readFileSync('./src/static/ssl/cert.crt')
+}
+const server_ip = getLocalIpAddress();
+function getLocalIpAddress() {
+    var ifaces = os.networkInterfaces()
+    for (var dev in ifaces) {
+        let iface = ifaces[dev];
+        for (let i = 0; i < iface.length; i++) {
+            let { family, address, internal } = iface[i];
+            if (family === 'IPv4' && address !== '127.0.0.1' && !internal) {
+                return address;
+            }
+        }
+    }
 }
 async function initialization() {
     try {
@@ -27,10 +41,7 @@ async function initialization() {
             .use(KoaCors({
                 origin: function (ctx) {
                     let url = ctx.header.origin;
-                    if (url == 'https://cms.server-xing.top') {
-                        return '*';
-                    }
-                    return 'https://cms.server-xing.top';
+                    return '*';
                 }
             }))
             .use(ResponseModule)
@@ -59,6 +70,6 @@ initialization().then(res => {
             console.log('Server Start Error:' + err);
             process.exit(1);
         }
-        console.log(`Server run at https://server-xing.top:${https_port}/`);
+        console.log(`Server run at https://${server_ip}:${https_port}/`);
     });
 });

@@ -6,12 +6,12 @@ module.exports = defineConfig({
   devServer: {
     port: 8196,
     https: {
-      key: fs.readFileSync('./ssl/server-xing.top.key'),
-      cert: fs.readFileSync('./ssl/server-xing.top.crt')
+      key: fs.readFileSync('./ssl/cert.key'),
+      cert: fs.readFileSync('./ssl/cert.crt')
     },
-    allowedHosts: [
-      'server-xing.top'
-    ]
+    // allowedHosts: [
+    //   'server-xing.top'
+    // ]
   },
   lintOnSave: false,
   chainWebpack: config => {
