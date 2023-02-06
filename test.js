@@ -17,6 +17,7 @@ const ssl = {
     key: fs.readFileSync('./src/static/ssl/cert.key'),
     cert: fs.readFileSync('./src/static/ssl/cert.crt')
 }
+const Verification = require('./src/middleware/verification');
 const server_ip = getLocalIpAddress();
 function getLocalIpAddress() {
     var ifaces = os.networkInterfaces()
@@ -38,6 +39,10 @@ async function initialization() {
                 maxFileSize: 20 * 1024 * 1024
             }
         }))
+            .use(async (ctx, next) => {
+                Verification.Filter(ctx);
+                await next();
+            })
             .use(KoaCors({
                 origin: function (ctx) {
                     let url = ctx.header.origin;
@@ -63,13 +68,14 @@ initialization().then(res => {
     if (!res) {
         console.log('服务初始化-错误');
         process.exit(1);
+    } else {
+        console.log('服务初始化-完成');
+        https.createServer(ssl, app.callback()).listen(https_port, (err) => {
+            if (err) {
+                console.log('Server Start Error:' + err);
+                process.exit(1);
+            }
+            console.log(`Server run at https://${server_ip}:${https_port}/`);
+        });
     }
-    console.log('服务初始化-完成');
-    https.createServer(ssl, app.callback()).listen(https_port, (err) => {
-        if (err) {
-            console.log('Server Start Error:' + err);
-            process.exit(1);
-        }
-        console.log(`Server run at https://${server_ip}:${https_port}/`);
-    });
 });

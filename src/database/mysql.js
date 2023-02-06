@@ -10,6 +10,6 @@ const mysql = new Sequelize('cms', 'cms', 'Zxc1290754123', {
         qcquire: 30000,
         idle: 10000,
     },
-    // logging: false,
+    logging: false,
 });
 module.exports = mysql;

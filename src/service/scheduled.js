@@ -5,12 +5,8 @@ const schedule = require('node-schedule');
 const sequelize = require('../database/mysql');
 // 数据模型
 const AdminModel = require('../model/admin');
-const AreaModel = require('../model/area');
 const ClassroomModel = require('../model/classroom');
-const ClassroomTypeModel = require('../model/classroomType');
 const UserModel = require('../model/user');
-// 数据模型关联
-const RelationModel = require('../model/relation');
 // 数据库服务连接测试
 async function databaseConnectTest() {
     await sequelize.authenticate();
@@ -20,9 +16,7 @@ async function databaseConnectTest() {
 async function dataModelSyncForce() {
     await sequelize.query("SET foreign_key_checks = 0");
     await AdminModel.sync({ force: true });
-    await AreaModel.sync({ force: true });
     await ClassroomModel.sync({ force: true });
-    await ClassroomTypeModel.sync({ force: true });
     await UserModel.sync({ force: true });
     await sequelize.query("SET foreign_key_checks = 1");
     return true;
@@ -30,9 +24,7 @@ async function dataModelSyncForce() {
 // 数据模型同步-更新
 async function dataModelSyncAlert() {
     await AdminModel.sync({ alert: true, });
-    await AreaModel.sync({ alert: true, });
     await ClassroomModel.sync({ alert: true, });
-    await ClassroomTypeModel.sync({ alert: true, });
     await UserModel.sync({ alert: true, });
     return true;
 }
@@ -45,7 +37,7 @@ async function start() {
         // 数据模型同步
         console.log("计划任务-数据模型同步");
         // await dataModelSyncForce();
-        // await dataModelSyncAlert();
+        await dataModelSyncAlert();
         return true;
     } catch (err) {
         console.log(err);

@@ -11,11 +11,11 @@ const IndexRouter = require("./src/router/index");
 const schedule = require("./src/service/scheduled");
 const app = new Koa();
 const https_port = 8194;
-const prettyError = require("pretty-error").start();
 const ssl = {
-    key: fs.readFileSync('./src/static/ssl/server-xing.top.key'),
-    cert: fs.readFileSync('./src/static/ssl/server-xing.top.crt')
+    key: fs.readFileSync('./src/static/ssl/cert.key'),
+    cert: fs.readFileSync('./src/static/ssl/cert.crt')
 }
+const Verification = require('./src/middleware/verification');
 async function initialization() {
     try {
         app.use(KoaBody({
@@ -24,6 +24,10 @@ async function initialization() {
                 maxFileSize: 20 * 1024 * 1024
             }
         }))
+            .use(async (ctx, next) => {
+                Verification.Filter(ctx);
+                await next();
+            })
             .use(KoaCors({
                 origin: function (ctx) {
                     let url = ctx.header.origin;
@@ -53,12 +57,14 @@ initialization().then(res => {
         console.log('服务初始化-错误');
         process.exit(1);
     }
-    console.log('服务初始化-完成');
-    https.createServer(ssl, app.callback()).listen(https_port, (err) => {
-        if (err) {
-            console.log('Server Start Error:' + err);
-            process.exit(1);
-        }
-        console.log(`Server run at https://server-xing.top:${https_port}/`);
-    });
+    else {
+        console.log('服务初始化-完成');
+        https.createServer(ssl, app.callback()).listen(https_port, (err) => {
+            if (err) {
+                console.log('Server Start Error:' + err);
+                process.exit(1);
+            }
+            console.log(`Server run at https://cms.server-xing.top:${https_port}/`);
+        });
+    }
 });

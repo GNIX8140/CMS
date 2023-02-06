@@ -3,7 +3,7 @@
 module.exports = async (ctx, next) => {
     ctx.success = (message, data) => {
         ctx.body = {
-            status: 200,
+            status: 1,
             message: message,
             data: data
         }
@@ -11,16 +11,23 @@ module.exports = async (ctx, next) => {
     ctx.error = (message, detail) => {
         console.log(message, detail);
         ctx.body = {
-            status: 500,
+            status: 1000,
             message: message,
             detail: detail
         }
     }
-    ctx.infoError = (message, detail) => {
+    ctx.unauthorized = (message, detail) => {
         ctx.body = {
-            status: 404,
+            status: 1001,
             message: message,
-            detail: detail
+            detail: "请求未授权",
+        }
+    }
+    ctx.dataError = (message, detail) => {
+        ctx.body = {
+            status: 1002,
+            message: message,
+            detail: "请求数据错误",
         }
     }
     await next();
