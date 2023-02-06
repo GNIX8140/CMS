@@ -20,18 +20,18 @@
     "underscore": "^1.13.2",
     "vue-cli": "^2.9.6"
   },
-  "name": "ccms",
-  "version": "1.0.0",
+  "name": "cms",
+  "version": "0.0.1",
   "main": "app.js",
   "scripts": {
-    "serve": "nodemon app.js",
-    "test": "nodemon test.js"
+    "serve": "node app.js",
+    "develop": "nodemon develop.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://gitee.com/xing8140/ccms.git"
+    "url": "https://gitee.com/xing8140/cms.git"
   },
   "author": "XING",
   "license": "ISC",
-  "description": ""
+  "description": "College Classroom Management System"
 }
