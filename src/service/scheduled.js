@@ -7,10 +7,17 @@ const sequelize = require('../database/mysql');
 const AdminModel = require('../model/admin');
 const ClassroomModel = require('../model/classroom');
 const UserModel = require('../model/user');
-// 数据库服务连接测试
-async function databaseConnectTest() {
+// Redis
+const Redis = require('../database/redis');
+// MySQL连接测试
+async function mysqlConnectTest() {
     await sequelize.authenticate();
-    return true;
+    return 'MySQL连接测试完成';
+}
+// Redis连接测试
+async function redisConnectTest() {
+    if (Redis.isReady) return 'Redis连接测试完成';
+    else throw Error('Redis连接错误');
 }
 // 数据模型同步-重建
 async function dataModelSyncForce() {
@@ -19,25 +26,30 @@ async function dataModelSyncForce() {
     await ClassroomModel.sync({ force: true });
     await UserModel.sync({ force: true });
     await sequelize.query("SET foreign_key_checks = 1");
-    return true;
+    await UserModel.create({
+        user_number: '190201139',
+        user_email: '1290754123@qq.com',
+        user_password: 'Zxc1290754123',
+        user_name: '邢文浩',
+        user_stitute: '信息工程学院',
+        user_authority: 0,
+    });
+    return '数据模型同步-重建';
 }
 // 数据模型同步-更新
 async function dataModelSyncAlert() {
     await AdminModel.sync({ alert: true, });
     await ClassroomModel.sync({ alert: true, });
     await UserModel.sync({ alert: true, });
-    return true;
+    return '数据模型同步-更新';
 }
 // 计划任务启动
 async function start() {
     try {
-        // 数据库连接测试
-        console.log("计划任务-数据库连接测试");
-        await databaseConnectTest();
-        // 数据模型同步
-        console.log("计划任务-数据模型同步");
-        // await dataModelSyncForce();
-        await dataModelSyncAlert();
+        console.log(await mysqlConnectTest());
+        console.log(await redisConnectTest());
+        // console.log(await dataModelSyncForce());
+        console.log(await dataModelSyncAlert());
         return true;
     } catch (err) {
         console.log(err);

@@ -3,21 +3,25 @@ const Koa = require("koa");
 const KoaBody = require("koa-body");
 const KoaCors = require("koa2-cors");
 const KoaStatic = require('koa-static')
+const session = require('koa-session');
 const sslify = require("koa-sslify").default;
 const ResponseModule = require("./src/middleware/response");
 const fs = require("fs");
-const os = require("os")
 const https = require("https");
 const IndexRouter = require("./src/router/index");
 const schedule = require("./src/service/scheduled");
 const app = new Koa();
 const https_port = 8195;
 const prettyError = require("pretty-error").start();
+const passport = require('./src/middleware/verification').passport;
 const ssl = {
     key: fs.readFileSync('./src/static/ssl/cert.key'),
     cert: fs.readFileSync('./src/static/ssl/cert.crt')
 }
 const Verification = require('./src/middleware/verification');
+
+// Delete Start
+const os = require("os")
 const server_ip = getLocalIpAddress();
 function getLocalIpAddress() {
     var ifaces = os.networkInterfaces()
@@ -31,26 +35,40 @@ function getLocalIpAddress() {
         }
     }
 }
+// Delete End
+
 async function initialization() {
     try {
+        app.keys = ['server-xing'];
         app.use(KoaBody({
             multipart: true,
             formidable: {
                 maxFileSize: 20 * 1024 * 1024
             }
         }))
-            .use(async (ctx, next) => {
-                Verification.Filter(ctx);
-                await next();
-            })
             .use(KoaCors({
                 origin: function (ctx) {
                     let url = ctx.header.origin;
                     return '*';
                 }
             }))
+            .use(session({
+                key: 'koa:sess',
+                maxAge: 86400000,
+                overwrite: true,
+                httpOnly: true,
+                signed: true,
+                rolling: false,
+                renew: true,
+            }, app))
             .use(ResponseModule)
             .use(sslify())
+            .use(passport.initialize())
+            .use(passport.session())
+            .use(async (ctx, next) => {
+                Verification.Filter(ctx);
+                await next();
+            })
             .use(IndexRouter.routes())
             .use(IndexRouter.allowedMethods())
             .use(KoaStatic('/Nodejs/Public/CMS/Preview'))

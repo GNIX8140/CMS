@@ -9,14 +9,17 @@ const ClassroomRouter = require('./classroom');
 
 const router = new Router()
     .get('/', (ctx) => {
-        ctx.success('index', {
+        return ctx.success('index', {
             type: 'GET'
         });
     })
     .post('/', (ctx) => {
-        ctx.success('index', {
+        return ctx.success('index', {
             type: 'POST'
         })
+    })
+    .get('/unauthorized', (ctx) => {
+        return ctx.unauthorized();
     })
     .use(UserRouter.routes())
     .use(AdminRouter.routes())
