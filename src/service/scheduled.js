@@ -34,6 +34,12 @@ async function dataModelSyncForce() {
         user_stitute: '信息工程学院',
         user_authority: 0,
     });
+    await AdminModel.create({
+        admin_username: '190201139',
+        admin_name: '邢文浩',
+        admin_password: 'Zxc1290754123',
+        admin_authority: 10,
+    });
     return '数据模型同步-重建';
 }
 // 数据模型同步-更新

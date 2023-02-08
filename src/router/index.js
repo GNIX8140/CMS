@@ -6,23 +6,30 @@ const UserRouter = require('./user');
 const AdminRouter = require('./admin');
 // Classroom路由表
 const ClassroomRouter = require('./classroom');
-
+// 主路由表
 const router = new Router()
-    .get('/', (ctx) => {
+    // index GET
+    .get('/', ctx => {
         return ctx.success('index', {
             type: 'GET'
         });
     })
-    .post('/', (ctx) => {
+    // index POST
+    .post('/', ctx => {
         return ctx.success('index', {
             type: 'POST'
         })
     })
-    .get('/unauthorized', (ctx) => {
-        return ctx.unauthorized();
+    // 退出登录
+    .get('/logout', ctx => {
+        ctx.logout();
+        return ctx.success();
     })
+    // 用户路由表
     .use(UserRouter.routes())
+    // 管理员路由表
     .use(AdminRouter.routes())
+    // 教室管理路由表
     .use(ClassroomRouter.routes());
 
 module.exports = router;

@@ -10,8 +10,8 @@ const AdminModel = sequelize.define('admin', {
         autoIncrement: true,
         primaryKey: true,
     },
-    // 管理员编号
-    admin_number: {
+    // 管理员用户名
+    admin_username: {
         type: DataTypes.CHAR,
         allowNull: false,
         unique: true,
@@ -20,6 +20,10 @@ const AdminModel = sequelize.define('admin', {
     admin_name: {
         type: DataTypes.STRING,
         allowNull: false,
+    },
+    // 管理员密码
+    admin_password: {
+        type: DataTypes.CHAR,
     },
     // 管理员权限等级
     admin_authority: {

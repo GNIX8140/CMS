@@ -20,7 +20,7 @@ const ssl = {
 }
 const Verification = require('./src/middleware/verification');
 
-// Delete Start
+// *** Delete Start ***
 const os = require("os")
 const server_ip = getLocalIpAddress();
 function getLocalIpAddress() {
@@ -35,7 +35,7 @@ function getLocalIpAddress() {
         }
     }
 }
-// Delete End
+// *** Delete End ***
 
 async function initialization() {
     try {
@@ -62,12 +62,20 @@ async function initialization() {
                 renew: true,
             }, app))
             .use(ResponseModule)
+            .use(async (ctx, next) => {
+                try {
+                    await next();
+                } catch (err) {
+                    ctx.error(false, err);
+                }
+            })
             .use(sslify())
             .use(passport.initialize())
             .use(passport.session())
             .use(async (ctx, next) => {
-                Verification.Filter(ctx);
-                await next();
+                if (await Verification.Filter(ctx)) {
+                    await next();
+                }
             })
             .use(IndexRouter.routes())
             .use(IndexRouter.allowedMethods())
