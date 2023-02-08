@@ -3,6 +3,8 @@ const AdminController = require('../controller/admin')
 const router = new Router({ prefix: '/admin' })
     // 登陆
     .get('/login', AdminController.Login)
+    // 资料
+    .get('/profile', AdminController.Profile)
     // 注册
     .post('/register', AdminController.Register)
     // 修改密码

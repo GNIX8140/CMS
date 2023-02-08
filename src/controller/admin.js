@@ -13,6 +13,20 @@ async function Login(ctx) {
     })(ctx)
 }
 
+// 管理员资料
+async function Profile(ctx) {
+    let admin = ctx.state.user;
+    if (!admin || !admin.admin_id) return ctx.unauthorized();
+    let adminProfile = await AdminModel.findOne({ where: { admin_id: admin.admin_id } });
+    if (!adminProfile) return ctx.dataError(null, '未查询到管理员资料');
+    adminProfile = {
+        username: adminProfile.admin_username,
+        name: adminProfile.admin_name,
+        authority: adminProfile.admin_authority,
+    }
+    return ctx.success(null, adminProfile);
+}
+
 // 注册
 async function Register(ctx) {
     let data = ctx.request.body;
@@ -24,7 +38,7 @@ async function Register(ctx) {
         admin_password: data.password,
         admin_authority: 10,
     });
-    ctx.success(null, '管理员注册成功');
+    return ctx.success(null, '管理员注册成功');
 }
 
 // 修改密码
@@ -60,4 +74,4 @@ async function ModifyName(ctx) {
     return ctx.success(null, '管理员姓名修改成功');
 }
 
-module.exports = { Login, Register, ModifyPassord, ModifyName };
+module.exports = { Login, Profile, Register, ModifyPassord, ModifyName };

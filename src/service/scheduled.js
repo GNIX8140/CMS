@@ -27,17 +27,17 @@ async function dataModelSyncForce() {
     await UserModel.sync({ force: true });
     await sequelize.query("SET foreign_key_checks = 1");
     await UserModel.create({
-        user_number: '190201139',
-        user_email: '1290754123@qq.com',
-        user_password: 'Zxc1290754123',
-        user_name: '邢文浩',
-        user_stitute: '信息工程学院',
+        user_number: '123',
+        user_email: '123@123.com',
+        user_password: '123',
+        user_name: 'name',
+        user_stitute: 'stitute',
         user_authority: 0,
     });
     await AdminModel.create({
-        admin_username: '190201139',
-        admin_name: '邢文浩',
-        admin_password: 'Zxc1290754123',
+        admin_username: 'admin',
+        admin_name: 'admin',
+        admin_password: 'admin',
         admin_authority: 10,
     });
     return '数据模型同步-重建';
@@ -54,7 +54,7 @@ async function start() {
     try {
         console.log(await mysqlConnectTest());
         console.log(await redisConnectTest());
-        // console.log(await dataModelSyncForce());
+        console.log(await dataModelSyncForce());
         console.log(await dataModelSyncAlert());
         return true;
     } catch (err) {

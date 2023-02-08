@@ -23,7 +23,7 @@ const router = new Router()
     // 退出登录
     .get('/logout', ctx => {
         ctx.logout();
-        return ctx.success();
+        return ctx.success(null, '已退出，请重新登陆');
     })
     // 用户路由表
     .use(UserRouter.routes())

@@ -3,6 +3,8 @@ const UserController = require('../controller/user');
 const router = new Router({ prefix: '/user' })
     // 登陆
     .get('/login', UserController.Login)
+    // 资料
+    .get('/profile', UserController.Profile)
     // 注册
     .post('/register', UserController.Register)
     // 修改密码

@@ -33,5 +33,6 @@ const AdminModel = sequelize.define('admin', {
 }, {
     tableName: 'cms_admin',
     timestamps: true,
+    paranoid: true
 });
 module.exports = AdminModel;

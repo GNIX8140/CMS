@@ -14,6 +14,22 @@ async function Login(ctx) {
     })(ctx)
 }
 
+// 用户资料
+async function Profile(ctx) {
+    let user = ctx.state.user;
+    if (!user || !user.user_id) return ctx.unauthorized();
+    let userProfile = await UserModel.findOne({ where: { user_id: user.user_id } });
+    if (!userProfile) return ctx.dataError(null, '未查询到用户资料');
+    userProfile = {
+        number: userProfile.user_number,
+        email: userProfile.user_email,
+        name: userProfile.user_name,
+        stitute: userProfile.user_stitute,
+        authority: userProfile.user_authority,
+    }
+    return ctx.success(null, userProfile);
+}
+
 // 注册
 async function Register(ctx) {
     let data = ctx.request.body;
@@ -38,7 +54,7 @@ async function Register(ctx) {
         user_stitute: data.stitute,
         user_authority: data.authority,
     });
-    ctx.success(null, '用户注册成功');
+    return ctx.success(null, '用户注册成功');
 }
 
 // 修改密码
@@ -74,4 +90,4 @@ async function ModifyName(ctx) {
     return ctx.success(null, '姓名修改成功');
 }
 
-module.exports = { Login, Register, ModifyPassword, ModifyName }
+module.exports = { Login, Profile, Register, ModifyPassword, ModifyName }

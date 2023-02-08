@@ -40,13 +40,14 @@ const UserModel = sequelize.define('user', {
         defaultValue: 0,
     },
     // 用户头像链接
-    user_portrait: {
-        type: DataTypes.STRING,
-    }
+    // user_portrait: {
+    //     type: DataTypes.STRING,
+    // }
 }, {
     // 用户表名称
     tableName: 'cms_user',
     // Sequelize 时间戳
     timestamps: true,
+    paranoid: true
 });
 module.exports = UserModel;
