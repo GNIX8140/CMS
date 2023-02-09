@@ -1,5 +1,6 @@
 const passport = require('../middleware/verification').passport;
 const AdminModel = require('../model/admin');
+const crypto = require('crypto');
 
 // 管理员登陆
 async function Login(ctx) {
@@ -33,6 +34,7 @@ async function Register(ctx) {
     let isExist = await AdminModel.findOne({ where: { admin_username: data.username } });
     if (isExist) return ctx.dataError(null, "用户名已存在");
     await AdminModel.create({
+        admin_uuid: crypto.randomUUID(),
         admin_username: data.username,
         admin_name: data.name,
         admin_password: data.password,

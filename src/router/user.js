@@ -10,5 +10,5 @@ const router = new Router({ prefix: '/user' })
     // 修改密码
     .post('/modifyPassword', UserController.ModifyPassword)
     // 修改姓名
-    .post('/modifyName', UserController.ModifyName)
+    .post('/update', UserController.Update)
 module.exports = router;

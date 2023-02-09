@@ -12,7 +12,6 @@ const IndexRouter = require("./src/router/index");
 const schedule = require("./src/service/scheduled");
 const app = new Koa();
 const https_port = 8195;
-const prettyError = require("pretty-error").start();
 const passport = require('./src/middleware/verification').passport;
 const ssl = {
     key: fs.readFileSync('./src/static/ssl/cert.key'),
@@ -22,6 +21,8 @@ const Verification = require('./src/middleware/verification');
 
 // *** Delete Start ***
 const os = require("os")
+const prettyError = require("pretty-error").start();
+
 const server_ip = getLocalIpAddress();
 function getLocalIpAddress() {
     var ifaces = os.networkInterfaces()
@@ -80,10 +81,7 @@ async function initialization() {
             .use(IndexRouter.routes())
             .use(IndexRouter.allowedMethods())
             .use(KoaStatic('/Nodejs/Public/CMS/Preview'))
-        let scheduleTaskStatus = await schedule.start();
-        if (!scheduleTaskStatus) {
-            throw Error('计划任务-错误');
-        }
+        await schedule.start();
         return true;
     } catch (err) {
         console.log(err);
@@ -92,16 +90,13 @@ async function initialization() {
 }
 initialization().then(res => {
     if (!res) {
-        console.log('服务初始化-错误');
         process.exit(1);
-    } else {
-        console.log('服务初始化-完成');
-        https.createServer(ssl, app.callback()).listen(https_port, (err) => {
-            if (err) {
-                console.log('Server Start Error:' + err);
-                process.exit(1);
-            }
-            console.log(`Server run at https://${server_ip}:${https_port}/`);
-        });
     }
+    https.createServer(ssl, app.callback()).listen(https_port, err => {
+        if (err) {
+            console.log('Server Start Error:' + err);
+            process.exit(1);
+        }
+        console.log(`Server run at https://${server_ip}:${https_port}/`);
+    });
 });

@@ -10,6 +10,11 @@ const UserModel = sequelize.define('user', {
         autoIncrement: true,
         primaryKey: true,
     },
+    // UUID
+    user_uuid: {
+        type: DataTypes.UUID,
+        allowNull: false,
+    },
     // 用户编号
     user_number: {
         type: DataTypes.CHAR,
@@ -38,6 +43,10 @@ const UserModel = sequelize.define('user', {
     user_authority: {
         type: DataTypes.INTEGER,
         defaultValue: 0,
+    },
+    user_inApply: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
     },
     // 用户头像链接
     // user_portrait: {

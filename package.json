@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "axios": "^0.26.1",
     "crypto": "^1.0.1",
     "koa": "^2.13.4",
     "koa-body": "^5.0.0",
@@ -12,8 +11,7 @@
     "koa-static": "^5.0.0",
     "koa2-cors": "^2.0.6",
     "moment": "^2.29.2",
-    "mysql": "^2.18.1",
-    "mysql2": "^2.3.3",
+    "mysql2": "^3.1.1",
     "node-schedule": "^2.1.0",
     "nodemailer": "^6.7.3",
     "passport": "^0.6.0",
@@ -22,8 +20,8 @@
     "pretty-error": "^4.0.0",
     "redis": "^4.6.4",
     "sequelize": "^6.18.0",
-    "socket.io": "^4.5.3",
     "underscore": "^1.13.2",
+    "validator": "^13.9.0",
     "vue-cli": "^1.2.0"
   },
   "name": "cms",

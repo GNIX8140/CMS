@@ -4,3 +4,5 @@ const classroomArea = [
     'C区',
     'D区',
 ]
+
+module.exports = classroomArea;

@@ -10,6 +10,11 @@ const ClassroomModel = sequelize.define('classroom', {
         autoIncrement: true,
         primaryKey: true,
     },
+    // UUID
+    classroom_uuid: {
+        type: DataTypes.UUID,
+        allowNull: false,
+    },
     // 教室所属区域
     classroom_area: {
         type: DataTypes.INTEGER,
@@ -33,12 +38,12 @@ const ClassroomModel = sequelize.define('classroom', {
     },
     // 教室申请权限
     classroom_authority: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.BOOLEAN,
         allowNull: false,
     },
     // 教室使用状态
-    classroom_status: {
-        type: DataTypes.STRING,
+    classroom_available: {
+        type: DataTypes.BOOLEAN,
         allowNull: false,
     }
 }, {

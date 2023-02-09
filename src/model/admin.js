@@ -10,6 +10,11 @@ const AdminModel = sequelize.define('admin', {
         autoIncrement: true,
         primaryKey: true,
     },
+    // UUID
+    admin_uuid: {
+        type: DataTypes.UUID,
+        allowNull: false,
+    },
     // 管理员用户名
     admin_username: {
         type: DataTypes.CHAR,

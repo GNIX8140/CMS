@@ -1,6 +1,7 @@
 const passport = require('../middleware/verification').passport;
 const UserModel = require('../model/user');
 const { Op } = require('sequelize');
+const crypto = require('crypto');
 
 // 用户登录
 async function Login(ctx) {
@@ -47,6 +48,7 @@ async function Register(ctx) {
     });
     if (isExist) return ctx.dataError(null, '学号或邮箱已存在');
     await UserModel.create({
+        user_uuid: crypto.randomUUID(),
         user_number: data.number,
         user_email: data.email,
         user_password: data.password,
@@ -74,20 +76,32 @@ async function ModifyPassword(ctx) {
     return ctx.success(null, '密码修改成功');
 }
 
-// 修改真实姓名
-async function ModifyName(ctx) {
+// 修改用户资料
+async function Update(ctx) {
     let data = ctx.request.body;
-    let user = await UserModel.findOne({ where: { user_id: ctx.session.passport.user.user_id } });
-    if (user.user_name == data.name) return ctx.dataError(null, '新旧姓名相同');
+    let userTemp = ctx.state.user;
+    let oldUser = await UserModel.findOne({ where: { user_id: ctx.session.passport.user.user_id } });
+    if (JSON.stringify(data) === '{}'
+        || data.number === undefined
+        || data.email === undefined
+        || data.name === undefined
+        || data.stitute === undefined) return ctx.dataError(null, '用户数据缺失');
+    if (data.number == oldUser.user_number
+        && data.email == oldUser.user_email
+        && data.name == oldUser.user_name
+        && data.stitute == oldUser.user_stitute) return ctx.dataError(null, '用户数据无更新');
     let result = await UserModel.update({
+        user_number: data.number,
+        user_email: data.email,
         user_name: data.name,
+        user_stitute: data.stitute,
     }, {
         where: {
-            user_id: ctx.session.passport.user.user_id,
+            user_id: userTemp.user_id,
         }
     });
-    if (!result[0]) return ctx.error(null, '姓名修改错误');
-    return ctx.success(null, '姓名修改成功');
+    if (!result[0]) return ctx.error(null, '用户资料更新错误');
+    return ctx.success(null, '用户资料更新成功');
 }
 
-module.exports = { Login, Profile, Register, ModifyPassword, ModifyName }
+module.exports = { Login, Profile, Register, ModifyPassword, Update }
