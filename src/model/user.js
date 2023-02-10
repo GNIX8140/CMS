@@ -57,6 +57,7 @@ const UserModel = sequelize.define('user', {
     tableName: 'cms_user',
     // Sequelize 时间戳
     timestamps: true,
+    // 软删除
     paranoid: true
 });
 module.exports = UserModel;

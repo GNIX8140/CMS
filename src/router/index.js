@@ -6,6 +6,8 @@ const UserRouter = require('./user');
 const AdminRouter = require('./admin');
 // Classroom路由表
 const ClassroomRouter = require('./classroom');
+// ClassroomRecord路由表
+const ClassroomRecordRouter = require('./classroomRecord');
 // 主路由表
 const router = new Router()
     // index GET
@@ -30,6 +32,8 @@ const router = new Router()
     // 管理员路由表
     .use(AdminRouter.routes())
     // 教室管理路由表
-    .use(ClassroomRouter.routes());
+    .use(ClassroomRouter.routes())
+    // 申请记录路由表
+    .use(ClassroomRecordRouter.routes())
 
 module.exports = router;

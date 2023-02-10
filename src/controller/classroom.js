@@ -1,12 +1,13 @@
 const ClassroomModel = require('../model/classroom');
-const ClassroomRecordModel = require('../model/classroom_record');
-const { Op, where } = require('sequelize');
+const ClassroomRecordModel = require('../model/classroomRecord');
+const { Op } = require('sequelize');
 const ClassroomAreaEnum = require('../enumeration/classroomArea');
 const ClassroomTypeEnum = require('../enumeration/classroomType');
 const moment = require('moment');
 const schedule = require('node-schedule');
 const UserModel = require('../model/user');
 const crypto = require('crypto');
+const sequelize = require('../database/mysql');
 
 // 查询列表
 async function QueryList(ctx) {
@@ -17,13 +18,13 @@ async function QueryList(ctx) {
     if (data.area) where.classroom_area = data.area;
     if (data.type) where.classroom_type = data.type;
     if (data.number) where = { classroom_number: { [Op.like]: `%${data.number}%` } };
-    let resultList = await ClassroomModel.findAll({
+    let {count, rows} = await ClassroomModel.findAndCountAll({
         where: where,
         offset: offset,
         limit: length,
     });
     let items = [];
-    resultList.forEach(item => {
+    rows.forEach(item => {
         items.push({
             id: item.classroom_id,
             area: ClassroomAreaEnum[item.classroom_area],
@@ -37,9 +38,6 @@ async function QueryList(ctx) {
     let nextItem = await ClassroomModel.findOne({
         where: where,
         offset: page * length,
-    });
-    let { count } = await ClassroomModel.findAndCountAll({
-        where: where,
     });
     return ctx.success('查询教室数据列表成功', {
         first: page == 1 ? true : false,
@@ -56,6 +54,8 @@ async function QueryList(ctx) {
 
 // 添加教室
 async function Add(ctx) {
+    let admin_authority = ctx.state.user.admin_authority;
+    if (!admin_authority) return ctx.unauthorized();
     let data = ctx.request.body;
     if (JSON.stringify(data) === '{}'
         || data.area === undefined
@@ -67,19 +67,24 @@ async function Add(ctx) {
         }
     });
     if (isExist) return ctx.dataError(null, '教室编号已存在');
-    await ClassroomModel.create({
-        classroom_area: data.area,
-        classroom_number: data.number,
-        classroom_type: data.type,
-        classroom_capacity: data.capacity ? data.capacity : ClassroomTypeEnum[data.type][1],
-        classroom_authority: data.authority ? data.authority : false,
-        classroom_available: data.available ? data.available : false,
+    await sequelize.transaction(async (t) => {
+        await ClassroomModel.create({
+            classroom_uuid: crypto.randomUUID(),
+            classroom_area: data.area,
+            classroom_number: data.number,
+            classroom_type: data.type,
+            classroom_capacity: data.capacity ? data.capacity : ClassroomTypeEnum[data.type][1],
+            classroom_authority: data.authority ? data.authority : false,
+            classroom_available: data.available ? data.available : false,
+        });
     });
     return ctx.success(null, '教室信息添加成功');
 }
 
 // 更新教室信息
 async function Update(ctx) {
+    let admin = ctx.state.user;
+    if (!admin.admin_authority) return ctx.unauthorized();
     let data = ctx.request.body;
     if (JSON.stringify(data) === '{}'
         || data.id === undefined
@@ -119,21 +124,25 @@ async function Update(ctx) {
 async function Apply(ctx) {
     let data = ctx.query;
     let user = ctx.state.user;
-    //测试时间
-    data.startTime = moment();
-    data.endTime = moment().add(10, 'seconds');
+    if (user.user_authority === undefined) return ctx.unauthorized();
     // 数据验证
     if (data.classroomId === undefined
         || user.user_id === undefined
         || data.startTime === undefined
         || data.endTime === undefined) return ctx.dataError();
+    // *** Delete Start *** 测试时间
+    data.startTime = moment();
+    data.endTime = moment().add(5, 'seconds');
+    // *** Delete End *** 测试时间
+    let endDatetime = data.endTime.format('YYYY M D H m s').split(' ');
+    endDatetime = new Date(endDatetime[0], endDatetime[1] - 1, endDatetime[2], endDatetime[3], endDatetime[4], endDatetime[5]);
     // 查询教室信息
     let classroom = await ClassroomModel.findOne({ where: { classroom_id: data.classroomId } });
     if (!classroom) return ctx.dataError(null, '教室ID错误');
     if (!classroom.classroom_available) return ctx.dataError(null, '当前教室不可用');
     let userData = await UserModel.findOne({ where: { user_id: user.user_id } });
-    if (userData.user_inApply) return ctx.dataError(null, '已有申请教室');
-    // 开始申请流程
+    if (userData.user_inApply) return ctx.dataError(null, '已有申请或使用中教室');
+    // 开始申请流程 更新用户申请状态
     let userUpdateResult = await UserModel.update({
         user_inApply: true,
     }, {
@@ -143,9 +152,10 @@ async function Apply(ctx) {
     });
     if (!userUpdateResult[0]) return ctx.error(null, '教室使用申请错误');
     // 判断申请是否需要审核
+    let classroomRecordUUID = crypto.randomUUID();
     if (classroom.classroom_authority) {
         await ClassroomRecordModel.create({
-            classroomRecord_uuid: crypto.randomUUID(),
+            classroomRecord_uuid: classroomRecordUUID,
             classroomRecord_user: user.user_id,
             classroomRecord_classroom: data.classroomId,
             classroomRecord_start: data.startTime,
@@ -154,9 +164,41 @@ async function Apply(ctx) {
             classroomRecord_pass: false,
             classroomRecord_finish: false,
         });
+        // 超时未审核 自动拒绝计划任务
+        schedule.scheduleJob(`${user.user_uuid}_auto`,endDatetime, async () => {
+            let record = await ClassroomRecordModel.findOne({
+                where: {
+                    classroomRecord_uuid: classroomRecordUUID,
+                }
+            });
+            if (!record.classroomRecord_status) {
+                await sequelize.transaction(async (t) => {
+                    await ClassroomRecordModel.update({
+                        classroomRecord_status: true,
+                        classroomRecord_pass: false,
+                        classroomRecord_finish: true,
+                    }, {
+                        where: {
+                            classroomRecord_id: record.classroomRecord_id,
+                        }
+                    });
+                    await UserModel.update({
+                        user_inApply: false,
+                    }, {
+                        where: {
+                            user_id: user.user_id,
+                        }
+                    });
+                });
+                return;
+            }
+            return;
+        })
         return ctx.success(null, '申请成功，等待审核');
-    } else {
-        let classroomRecordUUID = crypto.randomUUID();
+    }
+    // 无需审核
+    // 创建申请记录 更新教室状态
+    await sequelize.transaction(async (t) => {
         await ClassroomRecordModel.create({
             classroomRecord_uuid: classroomRecordUUID,
             classroomRecord_user: user.user_id,
@@ -167,17 +209,20 @@ async function Apply(ctx) {
             classroomRecord_pass: true,
             classroomRecord_finish: false,
         });
-        let classroomUpdateResult = await ClassroomModel.update({
+        await ClassroomModel.update({
             classroom_available: false,
         }, {
             where: {
                 classroom_id: data.classroomId,
             }
         });
-        if (!classroomUpdateResult[0]) return ctx.error(null, '教室使用申请错误');
-        let endDatetime = data.endTime.format('YYYY M D H m s').split(' ');
-        endDatetime = new Date(endDatetime[0], endDatetime[1] - 1, endDatetime[2], endDatetime[3], endDatetime[4], endDatetime[5]);
-        schedule.scheduleJob(user.user_uuid, endDatetime, async () => {
+    });
+    // 创建计划任务
+    // 结束时间更新教室状态 
+    // 更新用户申请状态
+    // 更新申请记录表信息
+    schedule.scheduleJob(user.user_uuid, endDatetime, async () => {
+        await sequelize.transaction(async (t) => {
             await ClassroomModel.update({
                 classroom_available: true,
             }, {
@@ -199,72 +244,38 @@ async function Apply(ctx) {
                     classroomRecord_uuid: classroomRecordUUID,
                 }
             });
-            console.log('finish');
-        });
-        ctx.success(null, '教室使用申请成功');
-    }
-}
-
-// 审批流程
-async function Approval(ctx) {
-    let adminAuthority = ctx.state.user.admin_authority;
-    if (!adminAuthority) return ctx.unauthorized();
-    let data = ctx.query;
-    let record = ClassroomRecordModel.findOne({
-        where: {
-            classroomRecord_id: data.classroomRecordId,
-        }
-    });
-    if (!record) return ctx.dataError(null, '申请ID错误');
-    // 审批流程开始
-    if (!data.agree) {
-        await ClassroomRecordModel.update({
-            classroomRecord_status: true,
-            classroomRecord_pass: false,
-            classroomRecord_finish: true,
-        }, {
-            where: record.classroomRecord_id,
-        });
-        ctx.success(null, '审批拒绝成功');
-    }
-    // 教室是否可用
-    let classroom = await ClassroomModel.findOne({ where: { classroom_id: record.classroomRecord_classroom } });
-    if (!classroom.classroom_available) return ctx.dataError(null, '教室使用中');
-    // 审批完成&&通过状态
-    let classroomRecordUpdateResult = await ClassroomRecordModel.update({
-        classroomRecord_status: true,
-        classroomRecord_pass: true,
-    });
-    if (!classroomRecordUpdateResult[0]) return ctx.error(null, '审批流程错误');
-    // 教室可用状态
-    let classroomUpdateResult = await ClassroomModel.update({
-        classroom_available: false,
-    }, {
-        where: {
-            classroom_id: record.classroomRecord_classroom,
-        }
-    });
-    if (!classroomUpdateResult[0]) return ctx.error(null, '审批流程错误');
-    let classroomApprovalList = await ClassroomRecordModel.findAll({
-        where: {
-            [Op.and]: [
-                { classroomRecord_classroom: record.classroomRecord_id },
-                { classroomRecord_status: false },
-            ]
-        }
-    });
-    // 其他相同教室待审核->拒绝&&结束
-    classroomApprovalList.forEach(async (item) => {
-        item.classroomRecord_status = false;
-        item.classroomRecord_pass = false;
-        item.classroomRecord_finish = true;
-        await ClassroomRecordModel.update(item, {
-            where: {
-                classroomRecord_id: item.classroomRecord_id,
-            }
         })
     });
-    ctx.success(null, '审批通过成功');
+    ctx.success(null, '教室使用申请成功');
 }
 
-module.exports = { QueryList, Add, Update, Apply, Approval }
+// 提前退还
+async function Refunds(ctx) {
+    let user = ctx.state.user;
+    if (user.user_authority === undefined) return ctx.unauthorized();
+    let userScheduleJob = schedule.scheduledJobs[user.user_uuid];
+    // 执行退还操作
+    userScheduleJob.job();
+    // 取消计划任务
+    userScheduleJob.cancel();
+    ctx.success(null, '教室退还成功');
+}
+
+// 取消申请 TODO
+async function Cancel(ctx) {
+    let user = ctx.state.user;
+    if (user.user_authority === undefined) return ctx.unauthorized();
+    ctx.success(null, '取消申请成功');
+}
+
+// 查询区域
+async function QueryArea(ctx) {
+    return ctx.success(null, ClassroomAreaEnum);
+}
+
+// 查询类型
+async function QueryType(ctx) {
+    return ctx.success(null, ClassroomTypeEnum);
+}
+
+module.exports = { QueryList, Add, Update, Apply, Refunds, Cancel, QueryArea, QueryType }

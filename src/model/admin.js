@@ -36,8 +36,11 @@ const AdminModel = sequelize.define('admin', {
         allowNull: false,
     }
 }, {
+    // 表名
     tableName: 'cms_admin',
+    // 时间戳
     timestamps: true,
+    // 软删除
     paranoid: true
 });
 module.exports = AdminModel;

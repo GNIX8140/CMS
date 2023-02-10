@@ -1,5 +1,8 @@
 "use strict"
 const { Sequelize } = require('sequelize');
+const cls = require('cls-hooked');
+const namespace = cls.createNamespace('transaction');
+Sequelize.useCLS(namespace);
 const mysql = new Sequelize('cms', 'cms', 'Zxc1290754123', {
     dialect: 'mysql',
     host: 'localhost',
