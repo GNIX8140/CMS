@@ -1,8 +1,8 @@
 const ClassroomModel = require('../model/classroom');
 const ClassroomRecordModel = require('../model/classroomRecord');
+const ClassroomAreaModel = require('../model/classroomArea');
+const ClassroomTypeModel = require('../model/classroomType');
 const { Op } = require('sequelize');
-const ClassroomAreaEnum = require('../enumeration/classroomArea');
-const ClassroomTypeEnum = require('../enumeration/classroomType');
 const moment = require('moment');
 const schedule = require('node-schedule');
 const UserModel = require('../model/user');
@@ -18,8 +18,18 @@ async function QueryList(ctx) {
     if (data.area) where.classroom_area = data.area;
     if (data.type) where.classroom_type = data.type;
     if (data.number) where = { classroom_number: { [Op.like]: `%${data.number}%` } };
-    let {count, rows} = await ClassroomModel.findAndCountAll({
+    let { count, rows } = await ClassroomModel.findAndCountAll({
         where: where,
+        include: [
+            {
+                attributes: ['classroomArea_name'],
+                model: ClassroomAreaModel,
+            },
+            {
+                attributes: ['classroomType_name'],
+                model: ClassroomTypeModel,
+            }
+        ],
         offset: offset,
         limit: length,
     });
@@ -27,9 +37,9 @@ async function QueryList(ctx) {
     rows.forEach(item => {
         items.push({
             id: item.classroom_id,
-            area: ClassroomAreaEnum[item.classroom_area],
+            area: item.classroomArea.classroomArea_name,
             number: item.classroom_number,
-            type: ClassroomTypeEnum[item.classroom_type][0],
+            type: item.classroomType.classroomType_name,
             capacity: item.classroom_capacity,
             authority: item.classroom_authority,
             available: item.classroom_available,
@@ -67,13 +77,14 @@ async function Add(ctx) {
         }
     });
     if (isExist) return ctx.dataError(null, '教室编号已存在');
+    let classroomType = await ClassroomTypeModel.findAll();
     await sequelize.transaction(async (t) => {
         await ClassroomModel.create({
             classroom_uuid: crypto.randomUUID(),
             classroom_area: data.area,
             classroom_number: data.number,
             classroom_type: data.type,
-            classroom_capacity: data.capacity ? data.capacity : ClassroomTypeEnum[data.type][1],
+            classroom_capacity: data.capacity ? data.capacity : classroomType[data.type].classroomType_capacity,
             classroom_authority: data.authority ? data.authority : false,
             classroom_available: data.available ? data.available : false,
         });
@@ -102,13 +113,15 @@ async function Update(ctx) {
         && data.capacity === oldClassroom.classroom_capacity
         && data.authority === oldClassroom.classroom_authority
         && data.available === oldClassroom.classroom_available) return ctx.dataError(null, '教室信息无更新');
-    if (data.area + 1 > ClassroomAreaEnum.length) return ctx.dataError(null, '教室区域数据错误');
-    if (data.type + 1 > ClassroomTypeEnum.length) return ctx.dataError(null, '教室类型数据错误');
+    let classroomArea = await ClassroomAreaModel.findAll();
+    let classroomType = await ClassroomTypeModel.findAll();
+    if (data.area + 1 > classroomArea.length) return ctx.dataError(null, '教室区域数据错误');
+    if (data.type + 1 > classroomType.length) return ctx.dataError(null, '教室类型数据错误');
     let updateResult = await ClassroomModel.update({
         classroom_area: data.area,
         classroom_number: data.number,
         classroom_type: data.type,
-        classroom_capacity: ClassroomTypeEnum[data.type][1],
+        classroom_capacity: data.capacity,
         classroom_authority: data.authority,
         classroom_available: data.available,
     }, {
@@ -132,7 +145,7 @@ async function Apply(ctx) {
         || data.endTime === undefined) return ctx.dataError();
     // *** Delete Start *** 测试时间
     data.startTime = moment();
-    data.endTime = moment().add(5, 'seconds');
+    data.endTime = moment().add(40, 'seconds');
     // *** Delete End *** 测试时间
     let endDatetime = data.endTime.format('YYYY M D H m s').split(' ');
     endDatetime = new Date(endDatetime[0], endDatetime[1] - 1, endDatetime[2], endDatetime[3], endDatetime[4], endDatetime[5]);
@@ -165,7 +178,7 @@ async function Apply(ctx) {
             classroomRecord_finish: false,
         });
         // 超时未审核 自动拒绝计划任务
-        schedule.scheduleJob(`${user.user_uuid}_auto`,endDatetime, async () => {
+        schedule.scheduleJob(`${user.user_uuid}_auto`, endDatetime, async () => {
             let record = await ClassroomRecordModel.findOne({
                 where: {
                     classroomRecord_uuid: classroomRecordUUID,
@@ -261,21 +274,31 @@ async function Refunds(ctx) {
     ctx.success(null, '教室退还成功');
 }
 
-// 取消申请 TODO
-async function Cancel(ctx) {
-    let user = ctx.state.user;
-    if (user.user_authority === undefined) return ctx.unauthorized();
-    ctx.success(null, '取消申请成功');
-}
-
 // 查询区域
 async function QueryArea(ctx) {
-    return ctx.success(null, ClassroomAreaEnum);
+    let classroomArea = await ClassroomAreaModel.findAll();
+    let items = [];
+    classroomArea.forEach(item => {
+        items.push({
+            id: item.classroomArea_id,
+            name: item.classroomArea_name,
+        });
+    });
+    return ctx.success(null, items);
 }
 
 // 查询类型
 async function QueryType(ctx) {
-    return ctx.success(null, ClassroomTypeEnum);
+    let classroomType = await ClassroomTypeModel.findAll();
+    let items = [];
+    classroomType.forEach(item => {
+        items.push({
+            id: item.classroomType_id,
+            name: item.classroomType_name,
+            capacity: item.classroomType_capacity,
+        })
+    })
+    return ctx.success(null, items);
 }
 
-module.exports = { QueryList, Add, Update, Apply, Refunds, Cancel, QueryArea, QueryType }
+module.exports = { QueryList, Add, Update, Apply, Refunds, QueryArea, QueryType }

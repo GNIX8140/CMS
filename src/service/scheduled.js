@@ -8,14 +8,12 @@ const UserModel = require('../model/user');
 const AdminModel = require('../model/admin');
 const ClassroomModel = require('../model/classroom');
 const ClassroomRecordModel = require('../model/classroomRecord');
+const ClassroomAreaModel = require('../model/classroomArea');
+const ClassroomTypeModel = require('../model/classroomType');
 const Associations = require('../model/associations');
+const InitData = require('../model/data');
 // Redis
 const Redis = require('../database/redis');
-// Crypto
-const crypto = require('crypto');
-const hash = crypto.createHash('md5');
-// Moment
-const moment = require('moment');
 // MySQL连接测试
 async function mysqlConnectTest() {
     await sequelize.authenticate();
@@ -32,43 +30,10 @@ async function dataModelSyncForce() {
     await AdminModel.sync({ force: true });
     await ClassroomModel.sync({ force: true });
     await ClassroomRecordModel.sync({ force: true });
+    await ClassroomAreaModel.sync({ force: true });
+    await ClassroomTypeModel.sync({ force: true });
     await Associations();
-    await UserModel.create({
-        user_uuid: crypto.randomUUID(),
-        user_number: '123',
-        user_email: '123@123.com',
-        user_password: crypto.createHash('md5').update('123').digest('hex'),
-        user_name: 'name',
-        user_stitute: 'stitute',
-        user_authority: 0,
-        user_inApply: false,
-    });
-    await AdminModel.create({
-        admin_uuid: crypto.randomUUID(),
-        admin_username: 'admin',
-        admin_name: 'admin',
-        admin_password: crypto.createHash('md5').update('admin').digest('hex'),
-        admin_authority: 10,
-    });
-    await ClassroomModel.create({
-        classroom_uuid: crypto.randomUUID(),
-        classroom_area: 0,
-        classroom_number: 'A001',
-        classroom_type: 0,
-        classroom_capacity: 30,
-        classroom_authority: true,
-        classroom_available: true,
-    });
-    await ClassroomRecordModel.create({
-        classroomRecord_uuid: crypto.randomUUID(),
-        classroomRecord_user: 1,
-        classroomRecord_classroom: 1,
-        classroomRecord_start: moment(),
-        classroomRecord_end: moment().add(20, 'seconds'),
-        classroomRecord_status: false,
-        classroomRecord_pass: false,
-        classroomRecord_finish: false,
-    });
+    await InitData();
     return '数据模型同步-重建';
 }
 // 数据模型同步-更新
@@ -77,6 +42,8 @@ async function dataModelSyncAlert() {
     await AdminModel.sync({ alert: true, });
     await ClassroomModel.sync({ alert: true, });
     await ClassroomRecordModel.sync({ alter: true });
+    await ClassroomAreaModel.sync({ alert: true });
+    await ClassroomTypeModel.sync({ alert: true });
     await Associations();
     return '数据模型同步-更新';
 }

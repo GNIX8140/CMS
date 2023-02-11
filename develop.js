@@ -11,7 +11,7 @@ const https = require("https");
 const IndexRouter = require("./src/router/index");
 const schedule = require("./src/service/scheduled");
 const app = new Koa();
-const https_port = 8195;
+const https_port = 8194;
 const passport = require('./src/middleware/verification').passport;
 const ssl = {
     key: fs.readFileSync('./src/static/ssl/cert.key'),
@@ -40,7 +40,7 @@ function getLocalIpAddress() {
 
 async function initialization() {
     try {
-        app.keys = ['server-xing'];
+        app.keys = ['Server-XING'];
         app.use(KoaBody({
             multipart: true,
             formidable: {
@@ -54,12 +54,12 @@ async function initialization() {
                 }
             }))
             .use(session({
-                key: 'koa:sess',
-                maxAge: 86400000,
+                key: 'CMS',
+                maxAge: 1000 * 60 * 60 * 24 * 7,
                 overwrite: true,
                 httpOnly: true,
                 signed: true,
-                rolling: false,
+                rolling: true,
                 renew: true,
             }, app))
             .use(ResponseModule)

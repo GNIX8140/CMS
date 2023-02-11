@@ -11,12 +11,21 @@ async function Approval(ctx) {
     let adminAuthority = ctx.state.user.admin_authority;
     if (!adminAuthority) return ctx.unauthorized();
     let data = ctx.request.body;
+    if (data.classroomRecordId === undefined
+        || data.agree === undefined) return ctx.dataError();
     let record = await ClassroomRecordModel.findOne({
+        include: [
+            {
+                attributes: ['user_uuid'],
+                model: UserModel,
+            }
+        ],
         where: {
             classroomRecord_id: data.classroomRecordId,
         }
     });
-    if (!record) return ctx.dataError(null, '申请ID错误');
+    if (!record) return ctx.dataError(null, '审批ID错误');
+    if (record.classroomRecord_finish) return ctx.dataError(null, '审批ID错误，已完成');
     // 审批流程开始
     // 拒绝申请
     if (!data.agree) {
@@ -25,9 +34,19 @@ async function Approval(ctx) {
             classroomRecord_pass: false,
             classroomRecord_finish: true,
         }, {
-            where: record.classroomRecord_id,
+            where: {
+                classroomRecord_id: record.classroomRecord_id
+            },
         });
-        ctx.success(null, '审批拒绝成功');
+        await UserModel.update({
+            user_inApply: false,
+        }, {
+            where: {
+                user_id: record.classroomRecord_user,
+            }
+        });
+        schedule.scheduledJobs[`${record.user.user_uuid}_auto`].cancel();
+        return ctx.success(null, '审批拒绝成功');
     }
     // 批准申请
     // 教室是否可用
@@ -86,10 +105,10 @@ async function Approval(ctx) {
                     classroomRecord_id: record.classroomRecord_id,
                 }
             });
-            console.log('finish');
         });
         return;
     });
+    schedule.scheduledJobs[`${user_uuid}_auto`].cancel();
     // 其他相同教室待审核->拒绝&&结束
     let classroomApprovalList = await ClassroomRecordModel.findAll({
         where: {
@@ -247,6 +266,13 @@ async function CancelApply(ctx) {
         }, {
             where: {
                 classroomRecord_id: classroomRecordId,
+            }
+        });
+        await UserModel.update({
+            user_inApply: false,
+        }, {
+            where: {
+                user_id: user.user_id,
             }
         });
     });
