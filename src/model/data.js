@@ -66,14 +66,14 @@ module.exports = async () => {
         classroomType_name: '语音教室',
         classroomType_capacity: 10,
     });
-    // await ClassroomRecordModel.create({
-    //     classroomRecord_uuid: crypto.randomUUID(),
-    //     classroomRecord_user: 1,
-    //     classroomRecord_classroom: 1,
-    //     classroomRecord_start: moment(),
-    //     classroomRecord_end: moment().add(20, 'seconds'),
-    //     classroomRecord_status: false,
-    //     classroomRecord_pass: false,
-    //     classroomRecord_finish: false,
-    // });
+    await ClassroomRecordModel.create({
+        classroomRecord_uuid: crypto.randomUUID(),
+        classroomRecord_user: 1,
+        classroomRecord_classroom: 1,
+        classroomRecord_start: moment(),
+        classroomRecord_end: moment().add(20, 'seconds'),
+        classroomRecord_status: false,
+        classroomRecord_pass: false,
+        classroomRecord_finish: false,
+    });
 }

@@ -39,7 +39,7 @@ passport.deserializeUser(function (user, done) {
     return done(null, user)
 })
 // API拦截白名单
-const allowAPI = ['/', '/user/login', '/admin/login', '/user/register'];
+const allowAPI = ['/', '/user/login', '/admin/login', '/user/register', '/dashboard/query'];
 // API拦截过滤器
 function Filter(ctx) {
     return new Promise((resolve) => {

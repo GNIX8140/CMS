@@ -14,6 +14,8 @@ const Associations = require('../model/associations');
 const InitData = require('../model/data');
 // Redis
 const Redis = require('../database/redis');
+// Dashboard
+const Dashboard = require('../controller/dashboard');
 // MySQL连接测试
 async function mysqlConnectTest() {
     await sequelize.authenticate();
@@ -47,6 +49,13 @@ async function dataModelSyncAlert() {
     await Associations();
     return '数据模型同步-更新';
 }
+// 定时查询数据库任务
+async function scheduleQueryDatabase() {
+    schedule.scheduleJob('cms_dashboard_data', '0 * * * * *', () => {
+        Dashboard.HandleDashboardData();
+    })
+    return '数据面板定时任务-启动';
+}
 // 计划任务启动
 async function start() {
     try {
@@ -54,6 +63,7 @@ async function start() {
         console.log(await redisConnectTest());
         console.log(await dataModelSyncForce());
         // console.log(await dataModelSyncAlert());
+        console.log(await scheduleQueryDatabase());
         console.log('服务初始化-完成');
         return true;
     } catch (err) {
