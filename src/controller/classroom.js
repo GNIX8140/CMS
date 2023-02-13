@@ -206,7 +206,7 @@ async function Apply(ctx) {
                 return;
             }
             return;
-        })
+        });
         return ctx.success(null, '申请成功，等待审核');
     }
     // 无需审核
@@ -266,11 +266,23 @@ async function Apply(ctx) {
 async function Refunds(ctx) {
     let user = ctx.state.user;
     if (user.user_authority === undefined) return ctx.unauthorized();
-    let userScheduleJob = schedule.scheduledJobs[user.user_uuid];
-    // 执行退还操作
-    userScheduleJob.job();
-    // 取消计划任务
-    userScheduleJob.cancel();
+    let data = ctx.query;
+    let classroomRecordId = data.classroomRecordId;
+    await sequelize.transaction(async (t) => {
+        // 更新结束时间
+        await ClassroomRecordModel.update({
+            classroomRecord_end: moment(),
+        }, {
+            where: {
+                classroomRecord_id: classroomRecordId,
+            }
+        });
+        let userScheduleJob = schedule.scheduledJobs[user.user_uuid];
+        // 执行退还操作
+        userScheduleJob.job();
+        // 取消计划任务
+        userScheduleJob.cancel();
+    });
     ctx.success(null, '教室退还成功');
 }
 

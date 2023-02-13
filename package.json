@@ -37,5 +37,11 @@
   },
   "author": "XING",
   "license": "ISC",
-  "description": "College Classroom Management System"
+  "description": "College Classroom Management System",
+  "nodemonConfig": {
+    "verbose": true,
+    "ignore": [
+      "view/"
+    ]
+  }
 }
