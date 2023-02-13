@@ -10,6 +10,7 @@ const ClassroomModel = require('../model/classroom');
 const ClassroomRecordModel = require('../model/classroomRecord');
 const ClassroomAreaModel = require('../model/classroomArea');
 const ClassroomTypeModel = require('../model/classroomType');
+const StituteModel = require('../model/stitute')
 const Associations = require('../model/associations');
 const InitData = require('../model/data');
 // Redis
@@ -28,12 +29,15 @@ async function redisConnectTest() {
 }
 // 数据模型同步-重建
 async function dataModelSyncForce() {
+    await sequelize.query('SET foreign_key_checks = 0;');
     await UserModel.sync({ force: true });
     await AdminModel.sync({ force: true });
     await ClassroomModel.sync({ force: true });
     await ClassroomRecordModel.sync({ force: true });
     await ClassroomAreaModel.sync({ force: true });
     await ClassroomTypeModel.sync({ force: true });
+    await StituteModel.sync({ force: true });
+    await sequelize.query('SET foreign_key_checks = 1;');
     await Associations();
     await InitData();
     return '数据模型同步-重建';
@@ -46,14 +50,16 @@ async function dataModelSyncAlert() {
     await ClassroomRecordModel.sync({ alter: true });
     await ClassroomAreaModel.sync({ alert: true });
     await ClassroomTypeModel.sync({ alert: true });
+    await StituteModel.sync({ alter: true });
     await Associations();
     return '数据模型同步-更新';
 }
 // 定时查询数据库任务
 async function scheduleQueryDatabase() {
-    schedule.scheduleJob('cms_dashboard_data', '0 * * * * *', () => {
-        Dashboard.HandleDashboardData();
-    })
+    // schedule.scheduleJob('cms_dashboard_data', '0 * * * * *', () => {
+    //     Dashboard.HandleDashboardData();
+    // });
+    Dashboard.HandleDashboardData();
     return '数据面板定时任务-启动';
 }
 // 计划任务启动

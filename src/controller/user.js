@@ -1,5 +1,6 @@
 const passport = require('../middleware/verification').passport;
 const UserModel = require('../model/user');
+const StituteModel = require('../model/stitute');
 const { Op } = require('sequelize');
 const crypto = require('crypto');
 
@@ -19,13 +20,23 @@ async function Login(ctx) {
 async function Profile(ctx) {
     let user = ctx.state.user;
     if (!user || !user.user_id) return ctx.unauthorized();
-    let userProfile = await UserModel.findOne({ where: { user_id: user.user_id } });
+    let userProfile = await UserModel.findOne({
+        where: {
+            user_id: user.user_id
+        },
+        include: [
+            {
+                attributes: ['stitute_name'],
+                model: StituteModel,
+            }
+        ]
+    });
     if (!userProfile) return ctx.dataError(null, '未查询到用户资料');
     userProfile = {
         number: userProfile.user_number,
         email: userProfile.user_email,
         name: userProfile.user_name,
-        stitute: userProfile.user_stitute,
+        stitute: userProfile.stitute.stitute_name,
         authority: userProfile.user_authority,
     }
     return ctx.success(null, userProfile);

@@ -3,23 +3,32 @@ const ClassroomModel = require('../model/classroom');
 const ClassroomRecordModel = require('../model/classroomRecord');
 const ClassroomAreaModel = require('../model/classroomArea');
 const ClassroomTypeModel = require('../model/classroomType');
+const StituteModel = require('../model/stitute');
 
 module.exports = async () => {
-    UserModel.belongsTo(ClassroomRecordModel, {
-        foreignKey: 'user_id',
-        targetKey: 'classroomRecord_user',
+    UserModel.belongsTo(StituteModel, {
+        foreignKey: 'user_stitute',
+        targetKey: 'stitute_id',
     });
-    ClassroomRecordModel.hasOne(UserModel, {
-        foreignKey: 'user_id',
-        targetKey: 'classromRecord_user',
+    StituteModel.hasMany(UserModel, {
+        foreignKey: 'user_stitute',
+        targetKey: 'stitute_id',
     });
-    ClassroomModel.belongsTo(ClassroomRecordModel, {
-        foreignKey: 'classroom_id',
-        targetKey: 'classroomRecord_classroom',
+    ClassroomRecordModel.belongsTo(UserModel, {
+        foreignKey: 'classroomRecord_user',
+        targetKey: 'user_id',
     });
-    ClassroomRecordModel.hasOne(ClassroomModel, {
-        foreignKey: 'classroom_id',
-        targetKey: 'classroomRecord_classroom',
+    UserModel.hasMany(ClassroomRecordModel, {
+        foreignKey: 'classroomRecord_user',
+        targetKey: 'user_id',
+    });
+    ClassroomRecordModel.belongsTo(ClassroomModel, {
+        foreignKey: 'classroomRecord_classroom',
+        targetKey: 'classroom_id',
+    });
+    ClassroomModel.hasMany(ClassroomRecordModel, {
+        foreignKey: 'classroomRecord_classroom',
+        targetKey: 'classroom_id',
     });
     ClassroomModel.belongsTo(ClassroomAreaModel, {
         foreignKey: 'classroom_area',

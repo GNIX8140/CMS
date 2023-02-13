@@ -5,13 +5,13 @@
             <span class="logo-div-span">Classroom Management System</span>
         </div>
         <div class="main-title-div">
-            <span class="title-div-en">Welcome To BGD Classroom Management System</span>
-            <span class="title-div-cn">北京工业大学耿丹学院教室管理系统</span>
+            <span class="title-div-en">College Classroom Management System</span>
+            <span class="title-div-cn">高校教室申请管理系统</span>
         </div>
         <div class="main-btn-group">
-            <button class="btn btn-secondary btn-group-btn btn-group-user">用户登陆</button>
+            <button class="btn btn-secondary btn-group-btn btn-group-user">申请教室</button>
             <button class="btn btn-primary btn-group-btn btn-group-data">数据面板</button>
-            <button class="btn btn-secondary btn-group-btn btn-group-admin">控制面板</button>
+            <button class="btn btn-secondary btn-group-btn btn-group-admin">后台管理</button>
         </div>
     </div>
 </template>

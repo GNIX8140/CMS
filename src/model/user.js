@@ -37,7 +37,7 @@ const UserModel = sequelize.define('user', {
     },
     // 用户所属学院
     user_stitute: {
-        type: DataTypes.CHAR,
+        type: DataTypes.INTEGER,
     },
     // 用户权限等级 (0: 学生; 1: 教师; 2: 组织管理人员; 3: 其他)
     user_authority: {

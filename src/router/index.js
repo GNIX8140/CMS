@@ -10,6 +10,12 @@ const ClassroomRouter = require('./classroom');
 const ClassroomRecordRouter = require('./classroomRecord');
 // DashBoard路由表
 const DashboardRouter = require('./dashboard');
+// Area
+const ClassroomAreaRouter = require('./classroomArea');
+// Type
+const ClassroomTypeRouter = require('./classroomType');
+// Stitute
+const StituteRouter = require('./stitute');
 // 主路由表
 const router = new Router()
     // index GET
@@ -39,5 +45,11 @@ const router = new Router()
     .use(ClassroomRecordRouter.routes())
     // 数据面板路由表
     .use(DashboardRouter.routes())
+    // Area
+    .use(ClassroomAreaRouter.routes())
+    // Type
+    .use(ClassroomTypeRouter.routes())
+    // Stitute
+    .use(StituteRouter.routes())
 
 module.exports = router;

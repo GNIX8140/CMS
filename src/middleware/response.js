@@ -1,5 +1,5 @@
 "use strict"
-// response数据格式
+// response数据格式模板
 module.exports = async (ctx, next) => {
     // API接口请求成功
     ctx.success = (message, data) => {

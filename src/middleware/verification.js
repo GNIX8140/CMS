@@ -1,12 +1,13 @@
 const passport = require('koa-passport');
 const Strategy = require('passport-local').Strategy;
 const UserModel = require('../model/user');
-const AdminModel = require('../model/admin')
+const AdminModel = require('../model/admin');
+const validator = require('validator');
 // 用户登录验证策略
 passport.use('user', new Strategy(async (username, password, done) => {
     if (!username) { return done(null, false, { message: "请输入用户名" }) }
     let where = {};
-    if (username.indexOf("@") != -1) where = { user_email: username }
+    if (validator.isEmail(username)) where = { user_email: username }
     else where = { user_number: username }
     UserModel.findOne({
         where: where

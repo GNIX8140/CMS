@@ -52,7 +52,7 @@ async function Approval(ctx) {
     // 教室是否可用
     let classroom = await ClassroomModel.findOne({ where: { classroom_id: record.classroomRecord_classroom } });
     if (!classroom.classroom_available) return ctx.dataError(null, '教室使用中');
-    sequelize.transaction(async (t) => {
+    await sequelize.transaction(async (t) => {
         // 更新审批完成&&通过状态
         await ClassroomRecordModel.update({
             classroomRecord_status: true,
@@ -108,7 +108,7 @@ async function Approval(ctx) {
         });
         return;
     });
-    schedule.scheduledJobs[`${user_uuid}_auto`].cancel();
+    if (schedule.scheduledJobs[`${user_uuid}_auto`]) schedule.scheduledJobs[`${user_uuid}_auto`].cancel();
     // 其他相同教室待审核->拒绝&&结束
     let classroomApprovalList = await ClassroomRecordModel.findAll({
         where: {
@@ -116,20 +116,35 @@ async function Approval(ctx) {
                 { classroomRecord_classroom: record.classroomRecord_id },
                 { classroomRecord_status: false },
             ]
-        }
+        },
+        include: [
+            {
+                attributes: ['user_id','user_uuid'],
+                model: UserModel,
+            }
+        ],
     });
     if (classroomApprovalList.length == 0) return ctx.success(null, '审批通过成功');
     classroomApprovalList.forEach(async (item) => {
-        item.classroomRecord_status = false;
-        item.classroomRecord_pass = false;
-        item.classroomRecord_finish = true;
         // 关闭申请记录
-        await ClassroomRecordModel.update(item, {
+        await ClassroomRecordModel.update({
+            classroomRecord_status: true,
+            classroomRecord_pass: false,
+            classroomRecord_finish: true,
+        }, {
             where: {
                 classroomRecord_id: item.classroomRecord_id,
             }
         });
         // 更新用户申请状态
+        if (schedule.scheduledJobs[`${item.user.user_uuid}_auto`]) schedule.scheduledJobs[`${item.user.user_uuid}_auto`].cancel();
+        await UserModel.update({
+            user_inApply: false,
+        }, {
+            where: {
+                user_id: item.user.user_id,
+            }
+        });
     });
     return ctx.success(null, '审批通过成功');
 }

@@ -286,31 +286,5 @@ async function Refunds(ctx) {
     ctx.success(null, '教室退还成功');
 }
 
-// 查询区域
-async function QueryArea(ctx) {
-    let classroomArea = await ClassroomAreaModel.findAll();
-    let items = [];
-    classroomArea.forEach(item => {
-        items.push({
-            id: item.classroomArea_id,
-            name: item.classroomArea_name,
-        });
-    });
-    return ctx.success(null, items);
-}
 
-// 查询类型
-async function QueryType(ctx) {
-    let classroomType = await ClassroomTypeModel.findAll();
-    let items = [];
-    classroomType.forEach(item => {
-        items.push({
-            id: item.classroomType_id,
-            name: item.classroomType_name,
-            capacity: item.classroomType_capacity,
-        })
-    })
-    return ctx.success(null, items);
-}
-
-module.exports = { QueryList, Add, Update, Apply, Refunds, QueryArea, QueryType }
+module.exports = { QueryList, Add, Update, Apply, Refunds }
