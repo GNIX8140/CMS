@@ -37,7 +37,8 @@
   "nodemonConfig": {
     "verbose": true,
     "ignore": [
-      "view/"
+      "view/",
+      "src/static/"
     ]
   }
 }
