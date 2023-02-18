@@ -5,5 +5,6 @@ import router from './router'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.min'
 import 'line-awesome/dist/line-awesome/css/line-awesome.min.css'
+window.ServerURL = 'https://127.0.0.1:8194';
 
 createApp(App).use(router).mount('#app')

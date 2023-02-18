@@ -11,7 +11,7 @@ async function Login(ctx) {
             ctx.dataError(null, info);
         } else {
             ctx.login(user);
-            ctx.success(null, { type: 'user', username: user.user_name })
+            ctx.success(null, { type: 'user', name: user.user_name })
         }
     })(ctx)
 }

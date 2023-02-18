@@ -1,19 +1,12 @@
-@media screen and (max-width: 600px) {
-  #app {
-    padding: 10px 10px;
-  }
-}
+@media screen and (max-width: 600px) {}
 
-@media screen and (min-width: 600px) and (max-width: 1200px) {
-  #app {
-    padding: 18px 20px;
-  }
-}
+@media screen and (min-width: 600px) and (max-width: 1200px) {}
 
-@media screen and (min-width: 1200px) {
-  #app {
-    padding: 18px 30px;
-  }
+@media screen and (min-width: 1200px) {}
+
+html,
+body {
+  height: 100%;
 }
 
 #app {
@@ -24,6 +17,7 @@
   color: #2c3e50;
   min-width: 370px;
   max-width: 1920px;
+  height: 100%;
   margin: 0px auto;
 }
 
@@ -36,6 +30,18 @@ body {
   margin: 0px;
   overflow-x: hidden;
 }
+
+/* @media screen and (max-width: 600px) {
+
+}
+
+@media screen and (min-width: 600px) and (max-width: 1200px) {
+
+}
+
+@media screen and (min-width: 1200px) {
+
+} */
 
 /* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;

@@ -9,7 +9,7 @@ async function Login(ctx) {
             ctx.dataError(null, info);
         } else {
             ctx.login(admin);
-            ctx.success(null, { type: 'admin', username: admin.admin_name });
+            ctx.success(null, { type: 'admin', name: admin.admin_name });
         }
     })(ctx)
 }

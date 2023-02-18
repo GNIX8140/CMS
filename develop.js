@@ -49,9 +49,13 @@ async function initialization() {
         }))
             .use(KoaCors({
                 origin: function (ctx) {
-                    let url = ctx.header.origin;
-                    return '*';
-                }
+                    return 'https://127.0.0.1:8195';
+                },
+                maxAge: 5,
+                credentials: true,
+                allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+                allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
+                exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
             }))
             .use(session({
                 key: 'CMS',
@@ -61,6 +65,7 @@ async function initialization() {
                 signed: true,
                 rolling: true,
                 renew: true,
+                sameSite: 'none',
             }, app))
             .use(ResponseModule)
             .use(async (ctx, next) => {

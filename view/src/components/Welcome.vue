@@ -1,294 +1,151 @@
 <template>
-    <div class="main">
-        <div class="main-logo-div">
-            <img class="logo-div-img" src="../assets/logo.svg">
-            <span class="logo-div-span">Classroom Management System</span>
+    <div class="welcome-body">
+        <div class="welcome-logo">
+            <img class="logo-img" src="../assets/logo.svg">
+            <span class="logo-span">Classroom Management System</span>
         </div>
-        <div class="main-title-div">
-            <span class="title-div-en">College Classroom Management System</span>
-            <span class="title-div-cn">高校教室申请管理系统</span>
+        <div class="welcome-title">
+            <span class="title-en">College Classroom Management System</span>
+            <span class="title-cn">高校教室申请管理系统</span>
         </div>
-        <div class="main-btn-group">
-            <button class="btn btn-secondary btn-group-btn btn-group-user">申请教室</button>
-            <button class="btn btn-primary btn-group-btn btn-group-data">数据面板</button>
-            <button class="btn btn-secondary btn-group-btn btn-group-admin">后台管理</button>
+        <div class="welcome-btn-group">
+            <router-link :to="{ path: '/login', query: { type: 'user' } }">
+                <button class="btn btn-primary btn-group-btn">申请教室</button>
+            </router-link>
+            <router-link to="/">
+                <button class="btn btn-secondary btn-group-btn">数据面板</button>
+            </router-link>
+            <router-link :to="{ path: '/login', query: { type: 'admin' } }">
+                <button class="btn btn-primary btn-group-btn">后台管理</button>
+            </router-link>
         </div>
     </div>
 </template>
 
-<script>
-</script>
 <style>
 @media screen and (max-width: 600px) {
-    .main-logo-div {
-        height: 40px;
+    .logo-img {
+        width: 48px;
+        height: 48px;
     }
 
-    .logo-div-img {
-        width: 1.8rem;
-        height: 1.8rem;
-    }
-
-    .logo-div-img:hover {
-        width: 2.2rem;
-        height: 2.2rem;
-    }
-
-    .logo-div-span {
-        font-size: 0.8rem;
-        margin-left: 10px;
-    }
-
-    .logo-div-span:hover {
-        font-size: 0.9rem;
-    }
-
-    .main-title-div {
-        height: 500px;
-    }
-
-    .title-div-en {
+    .logo-span {
         font-size: 1rem;
+        margin-left: 4px;
     }
 
-    .title-div-en:hover {
-        font-size: 1.1rem;
+    .welcome-title {
+        font-size: 1.2rem;
+        padding: 120px 0px;
     }
 
-    .title-div-cn {
-        font-size: 0.8rem;
-        margin-top: 10px;
-    }
-
-    .title-div-cn:hover {
+    .welcome-btn-group button {
         font-size: 0.9rem;
-    }
-
-    .main-btn-group {
-        height: 40px;
-    }
-
-    .btn-group-btn {
-        width: 6rem;
-        height: 2rem;
-        font-size: 0.6rem;
-        border-radius: 8px;
-    }
-
-    .btn-group-btn:hover {
-        width: 7rem;
-        height: 2.1rem;
-        font-size: 0.7rem;
-    }
-
-    .btn-group-data {
-        margin: 0px 16px;
+        padding: 8px 22px;
+        margin: 0px 6px;
     }
 }
 
 @media screen and (min-width: 600px) and (max-width: 1200px) {
-    .main-logo-div {
-        height: 50px;
+    .logo-img {
+        width: 52px;
+        height: 52px;
     }
 
-    .logo-div-img {
-        width: 2.4rem;
-        height: 2.4rem;
-    }
-
-    .logo-div-img:hover {
-        width: 2.8rem;
-        height: 2.8rem;
-    }
-
-    .logo-div-span {
-        font-size: 1.2rem;
-        margin-left: 30px;
-        letter-spacing: 1px;
-    }
-
-    .logo-div-span:hover {
+    .logo-span {
         font-size: 1.3rem;
-    }
-
-    .main-title-div {
-        height: 360px;
-    }
-
-    .title-div-en {
-        font-size: 1.5rem;
+        margin-left: 12px;
         letter-spacing: 2px;
     }
 
-    .title-div-en:hover {
+    .welcome-title {
         font-size: 1.6rem;
+        letter-spacing: 2px;
+        padding: 80px 0px;
     }
 
-    .title-div-cn {
-        font-size: 1.3rem;
-        margin-top: 15px;
-        letter-spacing: 1px;
-    }
-
-    .title-div-cn:hover {
-        font-size: 1.4rem
-    }
-
-    .main-btn-group {
-        height: 50px;
-    }
-
-    .btn-group-btn {
-        width: 9rem;
-        height: 2.2rem;
-        font-size: 0.8rem;
-        border-radius: 12px;
-    }
-
-    .btn-group-btn:hover {
-        width: 10rem;
-        height: 2.3rem;
-        font-size: 0.9rem;
-    }
-
-    .btn-group-data {
-        margin: 0px 56px;
+    .welcome-btn-group button {
+        padding: 7px 34px;
+        margin: 0px 10px;
     }
 }
 
 @media screen and (min-width: 1200px) {
-    .main-logo-div {
-        height: 60px;
+    .logo-img {
+        width: 58px;
+        height: 58px;
     }
 
-    .logo-div-img {
-        width: 3rem;
-        height: 3rem;
-    }
-
-    .logo-div-img:hover {
-        width: 3.4rem;
-        height: 3.4rem;
-    }
-
-    .logo-div-span {
+    .logo-span {
         font-size: 1.6rem;
-        margin-left: 40px;
-        letter-spacing: 1px;
-    }
-
-    .logo-div-span:hover {
-        font-size: 1.7em;
-    }
-
-    .main-title-div {
-        height: 420px;
-    }
-
-    .title-div-en {
-        font-size: 2rem;
+        margin-left: 18px;
         letter-spacing: 2px;
     }
 
-    .title-div-en:hover {
-        font-size: 2.1rem;
-    }
-
-    .title-div-cn {
+    .welcome-title {
         font-size: 1.8rem;
-        margin-top: 20px;
-        letter-spacing: 1px;
+        letter-spacing: 3px;
+        padding: 110px 0px;
     }
 
-    .title-div-cn:hover {
-        font-size: 1.9rem;
+    .welcome-btn-group button {
+        font-size: 1.1rem;
+        padding: 8px 42px;
+        margin: 0px 28px;
     }
 
-    .main-btn-group {
-        height: 60px;
-    }
-
-    .btn-group-btn {
-        width: 11rem;
-        height: 2.6rem;
-        font-size: 1rem;
-        border-radius: 15px;
-    }
-
-    .btn-group-btn:hover {
-        width: 12rem;
-        height: 2.7rem;
-        font-size: 1.1rem
-    }
-
-    .btn-group-data {
-        margin: 0px 96px;
+    .welcome-btn-group button:hover {
+        font-size: 1.1rem;
+        padding: 8px 52px;
     }
 }
 
-@media (prefers-color-scheme: light) {}
+.welcome-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    background-image: linear-gradient(to bottom right, rgba(162, 210, 255, 0.4), rgba(205, 180, 219, 0.4));
+}
 
-@media (prefers-color-scheme: dark) {}
-
-#app {
-    height: calc(100vh);
-    background-image: linear-gradient(to bottom right, rgba(162, 210, 255, 0.3), rgba(205, 180, 219, 0.3));
+.welcome-logo {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
 }
 
-.main {
-    display: flex;
-    flex-direction: column;
-}
-
-.main-logo-div {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-}
-
-.logo-div-img {
-    transition: all 0.1s linear 0s;
-}
-
-
-.logo-div-span {
-    font-weight: 600;
-    transition: all 0.2s linear 0s;
-}
-
-.main-title-div {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.title-div-en {
+.logo-span {
     font-weight: 700;
-    transition: all 0.2s linear 0s;
 }
 
-.title-div-cn {
-    font-weight: 600;
-    transition: all 0.2s linear 0s;
+.welcome-title {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: 800;
 }
 
-.main-btn-group {
+.title-cn {
+    margin-top: 32px;
+}
+
+.welcome-btn-group {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
 }
 
-.btn-group-btn {
-    font-weight: 600;
+.welcome-btn-group button {
+    border-radius: 14px;
+    font-weight: 500;
     letter-spacing: 1px;
-    border: 1px solid rgba(134, 134, 134, 0.6);
-    transition: all 0.1s linear 0s;
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.26);
+    transition: all 0.1s linear;
+    opacity: 0.9;
 }
 </style>

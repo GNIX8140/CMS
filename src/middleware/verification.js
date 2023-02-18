@@ -5,14 +5,14 @@ const AdminModel = require('../model/admin');
 const validator = require('validator');
 // 用户登录验证策略
 passport.use('user', new Strategy(async (username, password, done) => {
-    if (!username) { return done(null, false, { message: "请输入用户名" }) }
+    if (!username) { return done(null, false, "请输入用户名") }
     let where = {};
     if (validator.isEmail(username)) where = { user_email: username }
     else where = { user_number: username }
     UserModel.findOne({
         where: where
     }).then(user => {
-        if (!user) { return done(null, false, { message: "用户名错误" }); }
+        if (!user) { return done(null, false, "用户名错误"); }
         if (user.user_password !== password) { return done(null, false, { message: "密码错误" }); }
         return done(null, user);
     });
@@ -25,7 +25,7 @@ passport.use('admin', new Strategy(async (username, password, done) => {
             admin_username: username
         }
     }).then(user => {
-        if (!user) { return done(null, false, { message: "用户名错误" }); }
+        if (!user) { return done(null, false, "用户名错误"); }
         if (user.admin_password !== password) { return done(null, false, { message: "密码错误" }); }
         return done(null, user);
     });
@@ -40,7 +40,14 @@ passport.deserializeUser(function (user, done) {
     return done(null, user)
 })
 // API拦截白名单
-const allowAPI = ['/', '/user/login', '/admin/login', '/user/register', '/dashboard/query'];
+const allowAPI = [
+    '/',
+    '/user/login',
+    '/admin/login',
+    '/user/register',
+    '/dashboard/query',
+    '/stitute/queryList',
+];
 // API拦截过滤器
 function Filter(ctx) {
     return new Promise((resolve) => {

@@ -47,6 +47,7 @@ const UserModel = sequelize.define('user', {
     user_inApply: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
+        defaultValue: false,
     },
     // 用户头像链接
     // user_portrait: {
