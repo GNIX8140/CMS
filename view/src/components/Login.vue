@@ -147,18 +147,15 @@ async function login() {
         }
     }).then(res => {
         if (res.data.status != 1) throw Error(`登录错误：${res.data.detail}`);
-        showAlertMsg('登录成功');
-        axios.get(`${ServerURL}/classroom/queryList`, {
-            params: {
-                page: 1,
-                length: 10,
-            }
-        }).then(res => {
-            console.log(res.data);
-        });
-        // return route.push({
-        //     path: '/',
-        // })
+        if (type.value === 'user') {
+            return route.push({
+                path: '/classroom',
+            })
+        } else if (type.value === 'admin') {
+            return route.push({
+                path: '/control',
+            })
+        }
     }).catch(err => {
         showAlertMsg(err);
     });
@@ -211,7 +208,7 @@ function showAlertMsg(msg) {
         height: 520px;
     }
 
-    .alert {
+    .login-body .alert {
         width: 340px;
         top: 12px !important;
     }
@@ -259,7 +256,7 @@ function showAlertMsg(msg) {
         height: 460px;
     }
 
-    .alert {
+    .login-body .alert {
         width: 580px;
     }
 
@@ -289,7 +286,7 @@ function showAlertMsg(msg) {
         height: 600px;
     }
 
-    .alert {
+    .login-body .alert {
         width: 900px;
     }
 
@@ -318,7 +315,7 @@ function showAlertMsg(msg) {
     background-image: linear-gradient(to bottom right, rgba(162, 210, 255, 0.4), rgba(205, 180, 219, 0.4));
 }
 
-.alert {
+.login-body .alert {
     position: absolute;
     border-radius: 18px;
     font-size: 1rem;

@@ -12,7 +12,7 @@
             <router-link :to="{ path: '/login', query: { type: 'user' } }">
                 <button class="btn btn-primary btn-group-btn">申请教室</button>
             </router-link>
-            <router-link to="/">
+            <router-link to="/dashboard">
                 <button class="btn btn-secondary btn-group-btn">数据面板</button>
             </router-link>
             <router-link :to="{ path: '/login', query: { type: 'admin' } }">
