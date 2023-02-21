@@ -14,8 +14,8 @@ const app = new Koa();
 const https_port = 8194;
 const passport = require('./src/middleware/verification').passport;
 const ssl = {
-    key: fs.readFileSync('./src/static/ssl/cert.key'),
-    cert: fs.readFileSync('./src/static/ssl/cert.crt')
+    key: fs.readFileSync('./src/static/ssl/cms.server-xing.top.key'),
+    cert: fs.readFileSync('./src/static/ssl/cms.server-xing.top.crt')
 }
 const Verification = require('./src/middleware/verification');
 
