@@ -13,7 +13,7 @@ passport.use('user', new Strategy(async (username, password, done) => {
         where: where
     }).then(user => {
         if (!user) { return done(null, false, "用户名错误"); }
-        if (user.user_password !== password) { return done(null, false, { message: "密码错误" }); }
+        if (user.user_password !== password) { return done(null, false, "密码错误"); }
         return done(null, user);
     });
 }
@@ -26,7 +26,7 @@ passport.use('admin', new Strategy(async (username, password, done) => {
         }
     }).then(user => {
         if (!user) { return done(null, false, "用户名错误"); }
-        if (user.admin_password !== password) { return done(null, false, { message: "密码错误" }); }
+        if (user.admin_password !== password) { return done(null, false, "密码错误"); }
         return done(null, user);
     });
 }

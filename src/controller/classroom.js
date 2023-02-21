@@ -37,9 +37,9 @@ async function QueryList(ctx) {
     rows.forEach(item => {
         items.push({
             id: item.classroom_id,
-            area: item.classroomArea.classroomArea_name,
+            area: item.classroom_area,
             number: item.classroom_number,
-            type: item.classroomType.classroomType_name,
+            type: item.classroom_type,
             capacity: item.classroom_capacity,
             authority: item.classroom_authority,
             available: item.classroom_available,
@@ -143,11 +143,11 @@ async function Apply(ctx) {
         || user.user_id === undefined
         || data.startTime === undefined
         || data.endTime === undefined) return ctx.dataError();
-    // *** Delete Start *** 测试时间
-    data.startTime = moment();
-    data.endTime = moment().add(40, 'seconds');
-    // *** Delete End *** 测试时间
-    let endDatetime = data.endTime.format('YYYY M D H m s').split(' ');
+    // // *** Delete Start *** 测试时间
+    // data.startTime = moment();
+    // data.endTime = moment().add(40, 'seconds');
+    // // *** Delete End *** 测试时间
+    let endDatetime = moment(data.endTime).format('YYYY M D H m s').split(' ');
     endDatetime = new Date(endDatetime[0], endDatetime[1] - 1, endDatetime[2], endDatetime[3], endDatetime[4], endDatetime[5]);
     // 查询教室信息
     let classroom = await ClassroomModel.findOne({ where: { classroom_id: data.classroomId } });
@@ -278,13 +278,63 @@ async function Refunds(ctx) {
             }
         });
         let userScheduleJob = schedule.scheduledJobs[user.user_uuid];
-        // 执行退还操作
-        userScheduleJob.job();
-        // 取消计划任务
-        userScheduleJob.cancel();
+        if (userScheduleJob == undefined) {
+            let record = await ClassroomRecordModel.findOne({
+                where: {
+                    classroomRecord_id: classroomRecordId,
+                }
+            });
+            await ClassroomModel.update({
+                classroom_available: true,
+            }, {
+                where: {
+                    classroom_id: record.classroomRecord_classroom,
+                }
+            });
+            await UserModel.update({
+                user_inApply: false,
+            }, {
+                where: {
+                    user_id: user.user_id,
+                }
+            });
+            await ClassroomRecordModel.update({
+                classroomRecord_finish: true,
+            }, {
+                where: {
+                    classroomRecord_id: classroomRecordId,
+                }
+            });
+        } else {
+            // 执行退还操作
+            userScheduleJob.job();
+            // 取消计划任务
+            userScheduleJob.cancel();
+        }
     });
     ctx.success(null, '教室退还成功');
 }
 
+// 删除教室
+async function Delete(ctx) {
+    let admin = ctx.state.user;
+    if (!admin.admin_authority) return ctx.unauthorized();
+    let data = ctx.query;
+    let classroom = await ClassroomModel.findOne({
+        where: {
+            classroom_id: data.classroomId,
+        }
+    });
+    if (!classroom.classroom_available) return ctx.dataError(null, '教室使用中，请稍后操作');
+    await sequelize.transaction(async (t) => {
+        await ClassroomModel.destroy({
+            where: {
+                classroom_id: data.classroomId,
+            }
+        });
+    });
+    ctx.success(null, '教室信息删除成功');
+}
 
-module.exports = { QueryList, Add, Update, Apply, Refunds }
+
+module.exports = { QueryList, Add, Update, Apply, Refunds, Delete }

@@ -6,4 +6,5 @@ const router = new Router({ prefix: '/classroom' })
     .post('/update', ClassroomController.Update)
     .get('/apply', ClassroomController.Apply)
     .get('/refunds', ClassroomController.Refunds)
+    .get('/delete', ClassroomController.Delete)
 module.exports = router;

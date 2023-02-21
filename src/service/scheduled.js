@@ -56,10 +56,9 @@ async function dataModelSyncAlert() {
 }
 // 定时查询数据库任务
 async function scheduleQueryDatabase() {
-    // schedule.scheduleJob('cms_dashboard_data', '0 * * * * *', () => {
-    //     Dashboard.HandleDashboardData();
-    // });
-    Dashboard.HandleDashboardData();
+    schedule.scheduleJob('cms_dashboard_data', '0 * * * * *', () => {
+        Dashboard.HandleDashboardData();
+    });
     return '数据面板定时任务-启动';
 }
 // 计划任务启动
@@ -67,9 +66,10 @@ async function start() {
     try {
         console.log(await mysqlConnectTest());
         console.log(await redisConnectTest());
-        console.log(await dataModelSyncForce());
-        // console.log(await dataModelSyncAlert());
+        // console.log(await dataModelSyncForce());
+        console.log(await dataModelSyncAlert());
         console.log(await scheduleQueryDatabase());
+        Dashboard.HandleDashboardData();
         console.log('服务初始化-完成');
         return true;
     } catch (err) {

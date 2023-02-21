@@ -5,7 +5,9 @@
         </div>
         <div class="login-container">
             <div class="login-left">
-                <span class="login-title">CMS {{ type == 'register' ? '用户注册' : '用户登录' }}</span>
+                <span class="login-title" v-show="type=='user'">CMS 用户登录</span>
+                <span class="login-title" v-show="type=='admin'">CMS管理员登录</span>
+                <span class="login-title" v-show="type=='register'">CMS 用户注册</span>
                 <button class="login-change btn btn-primary" @click="type = 'admin'" v-show="type == 'user'">管理员登录</button>
                 <button class="login-change btn btn-primary" @click="type = 'user'" v-show="type == 'admin'">用户登录</button>
                 <button class="login-change btn btn-primary" @click="type = 'user'"
@@ -25,7 +27,7 @@
                     </div>
                     <div class="input-group">
                         <span class="input-group-text">密码</span>
-                        <input ref="userPassword" type="text" class="form-control" placeholder="密码">
+                        <input ref="userPassword" type="password" class="form-control" placeholder="密码">
                     </div>
                     <div class="button-group">
                         <button class="btn btn-secondary" @click="type = 'register'">注册</button>
@@ -39,7 +41,7 @@
                     </div>
                     <div class="input-group">
                         <span class="input-group-text">密码</span>
-                        <input ref="adminPassword" type="text" class="form-control" placeholder="密码">
+                        <input ref="adminPassword" type="password" class="form-control" placeholder="密码">
                     </div>
                     <div class="button-group">
                         <button class="btn btn-success" @click="login">登录</button>
@@ -60,7 +62,7 @@
                     </div>
                     <div class="input-group">
                         <span class="input-group-text">密码</span>
-                        <input type="text" class="form-control" placeholder="密码" v-model="registerData.password">
+                        <input type="password" class="form-control" placeholder="密码" v-model="registerData.password">
                     </div>
                     <div class="input-group">
                         <span class="input-group-text">学院</span>
@@ -100,7 +102,7 @@ const stituteList = ref();
 const identityList = ref([
     { id: 0, name: '学生' },
     { id: 1, name: '教师' },
-    { id: 2, name: '社团组织成员' },
+    { id: 2, name: '社团/组织成员' },
     { id: 3, name: '其他' }
 ]);
 const registerData = ref({
@@ -146,7 +148,7 @@ async function login() {
             password: md5(password),
         }
     }).then(res => {
-        if (res.data.status != 1) throw Error(`登录错误：${res.data.detail}`);
+        if (res.data.status != 1) return showAlertMsg(res.data.detail);
         if (type.value === 'user') {
             return route.push({
                 path: '/classroom',
@@ -201,7 +203,7 @@ function showAlertMsg(msg) {
 }
 </script>
 
-<style>
+<style scoped>
 @media screen and (max-width: 600px) {
     .login-container {
         width: 340px;
@@ -312,7 +314,7 @@ function showAlertMsg(msg) {
     height: 100%;
     justify-content: center;
     align-items: center;
-    background-image: linear-gradient(to bottom right, rgba(162, 210, 255, 0.4), rgba(205, 180, 219, 0.4));
+    background-image: linear-gradient(to bottom right, rgba(162, 210, 255, 0.2), rgba(205, 180, 219, 0.2));
 }
 
 .login-body .alert {

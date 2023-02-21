@@ -12,9 +12,9 @@ module.exports = async () => {
     await UserModel.create({
         user_uuid: crypto.randomUUID(),
         user_number: '123',
-        user_email: '123@123.com',
+        user_email: '123@163.com',
         user_password: crypto.createHash('md5').update('123').digest('hex'),
-        user_name: 'name1',
+        user_name: '123',
         user_stitute: 1,
         user_authority: 0,
         user_inApply: false,
@@ -22,10 +22,30 @@ module.exports = async () => {
     await UserModel.create({
         user_uuid: crypto.randomUUID(),
         user_number: '234',
-        user_email: '234@123.com',
-        user_password: crypto.createHash('md5').update('123').digest('hex'),
-        user_name: 'name2',
+        user_email: '234@163.com',
+        user_password: crypto.createHash('md5').update('234').digest('hex'),
+        user_name: '234',
         user_stitute: 2,
+        user_authority: 0,
+        user_inApply: false,
+    });
+    await UserModel.create({
+        user_uuid: crypto.randomUUID(),
+        user_number: '345',
+        user_email: '345@163.com',
+        user_password: crypto.createHash('md5').update('234').digest('hex'),
+        user_name: '345',
+        user_stitute: 3,
+        user_authority: 0,
+        user_inApply: false,
+    });
+    await UserModel.create({
+        user_uuid: crypto.randomUUID(),
+        user_number: '456',
+        user_email: '456@163.com',
+        user_password: crypto.createHash('md5').update('234').digest('hex'),
+        user_name: '456',
+        user_stitute: 4,
         user_authority: 0,
         user_inApply: false,
     });
@@ -47,29 +67,164 @@ module.exports = async () => {
     });
     await ClassroomModel.create({
         classroom_uuid: crypto.randomUUID(),
+        classroom_area: 1,
+        classroom_number: 'A002',
+        classroom_type: 2,
+        classroom_capacity: 30,
+        classroom_authority: false,
+        classroom_available: true,
+    });
+    await ClassroomModel.create({
+        classroom_uuid: crypto.randomUUID(),
+        classroom_area: 1,
+        classroom_number: 'A003',
+        classroom_type: 3,
+        classroom_capacity: 30,
+        classroom_authority: false,
+        classroom_available: true,
+    });
+    await ClassroomModel.create({
+        classroom_uuid: crypto.randomUUID(),
+        classroom_area: 1,
+        classroom_number: 'A004',
+        classroom_type: 4,
+        classroom_capacity: 30,
+        classroom_authority: false,
+        classroom_available: true,
+    });
+    await ClassroomModel.create({
+        classroom_uuid: crypto.randomUUID(),
         classroom_area: 2,
         classroom_number: 'B001',
+        classroom_type: 1,
+        classroom_capacity: 90,
+        classroom_authority: false,
+        classroom_available: true,
+    });
+    await ClassroomModel.create({
+        classroom_uuid: crypto.randomUUID(),
+        classroom_area: 2,
+        classroom_number: 'B002',
         classroom_type: 2,
         classroom_capacity: 90,
-        classroom_authority: true,
+        classroom_authority: false,
+        classroom_available: true,
+    });
+    await ClassroomModel.create({
+        classroom_uuid: crypto.randomUUID(),
+        classroom_area: 2,
+        classroom_number: 'B003',
+        classroom_type: 2,
+        classroom_capacity: 90,
+        classroom_authority: false,
+        classroom_available: true,
+    });
+    await ClassroomModel.create({
+        classroom_uuid: crypto.randomUUID(),
+        classroom_area: 2,
+        classroom_number: 'B004',
+        classroom_type: 4,
+        classroom_capacity: 90,
+        classroom_authority: false,
+        classroom_available: true,
+    });
+    await ClassroomModel.create({
+        classroom_uuid: crypto.randomUUID(),
+        classroom_area: 2,
+        classroom_number: 'B204',
+        classroom_type: 5,
+        classroom_capacity: 90,
+        classroom_authority: false,
         classroom_available: true,
     });
     await ClassroomModel.create({
         classroom_uuid: crypto.randomUUID(),
         classroom_area: 3,
         classroom_number: 'C001',
+        classroom_type: 1,
+        classroom_capacity: 20,
+        classroom_authority: false,
+        classroom_available: true,
+    });
+    await ClassroomModel.create({
+        classroom_uuid: crypto.randomUUID(),
+        classroom_area: 3,
+        classroom_number: 'C002',
         classroom_type: 3,
         classroom_capacity: 20,
-        classroom_authority: true,
+        classroom_authority: false,
+        classroom_available: true,
+    });
+    await ClassroomModel.create({
+        classroom_uuid: crypto.randomUUID(),
+        classroom_area: 3,
+        classroom_number: 'C003',
+        classroom_type: 3,
+        classroom_capacity: 20,
+        classroom_authority: false,
+        classroom_available: true,
+    });
+    await ClassroomModel.create({
+        classroom_uuid: crypto.randomUUID(),
+        classroom_area: 3,
+        classroom_number: 'C004',
+        classroom_type: 4,
+        classroom_capacity: 20,
+        classroom_authority: false,
+        classroom_available: true,
+    });
+    await ClassroomModel.create({
+        classroom_uuid: crypto.randomUUID(),
+        classroom_area: 3,
+        classroom_number: 'C12',
+        classroom_type: 5,
+        classroom_capacity: 20,
+        classroom_authority: false,
         classroom_available: true,
     });
     await ClassroomModel.create({
         classroom_uuid: crypto.randomUUID(),
         classroom_area: 4,
         classroom_number: 'D001',
+        classroom_type: 1,
+        classroom_capacity: 40,
+        classroom_authority: false,
+        classroom_available: true,
+    });
+    await ClassroomModel.create({
+        classroom_uuid: crypto.randomUUID(),
+        classroom_area: 4,
+        classroom_number: 'D002',
+        classroom_type: 2,
+        classroom_capacity: 40,
+        classroom_authority: false,
+        classroom_available: true,
+    });
+    await ClassroomModel.create({
+        classroom_uuid: crypto.randomUUID(),
+        classroom_area: 4,
+        classroom_number: 'D003',
+        classroom_type: 3,
+        classroom_capacity: 40,
+        classroom_authority: false,
+        classroom_available: true,
+    });
+    await ClassroomModel.create({
+        classroom_uuid: crypto.randomUUID(),
+        classroom_area: 4,
+        classroom_number: 'D004',
         classroom_type: 4,
         classroom_capacity: 40,
-        classroom_authority: true,
+        classroom_authority: false,
+        classroom_available: true,
+    });
+    await ClassroomModel.create({
+        classroom_uuid: crypto.randomUUID(),
+        classroom_area: 4,
+        classroom_number: 'D11',
+        classroom_type: 5,
+        classroom_capacity: 40,
+        classroom_authority: false,
         classroom_available: true,
     });
     await ClassroomAreaModel.create({
@@ -116,24 +271,4 @@ module.exports = async () => {
     await StituteModel.create({
         stitute_name: '信息工程学院',
     });
-    // await ClassroomRecordModel.create({
-    //     classroomRecord_uuid: crypto.randomUUID(),
-    //     classroomRecord_user: 1,
-    //     classroomRecord_classroom: 1,
-    //     classroomRecord_start: moment(),
-    //     classroomRecord_end: moment().add(20, 'seconds'),
-    //     classroomRecord_status: false,
-    //     classroomRecord_pass: false,
-    //     classroomRecord_finish: false,
-    // });
-    // await ClassroomRecordModel.create({
-    //     classroomRecord_uuid: crypto.randomUUID(),
-    //     classroomRecord_user: 1,
-    //     classroomRecord_classroom: 1,
-    //     classroomRecord_start: moment(),
-    //     classroomRecord_end: moment().add(20, 'seconds'),
-    //     classroomRecord_status: false,
-    //     classroomRecord_pass: false,
-    //     classroomRecord_finish: false,
-    // });
 }

@@ -22,7 +22,7 @@
     </div>
 </template>
 
-<style>
+<style scoped>
 @media screen and (max-width: 600px) {
     .logo-img {
         width: 48px;
@@ -107,7 +107,7 @@
     align-items: center;
     width: 100%;
     height: 100vh;
-    background-image: linear-gradient(to bottom right, rgba(162, 210, 255, 0.4), rgba(205, 180, 219, 0.4));
+    background-image: linear-gradient(to bottom right, rgba(162, 210, 255, 0.2), rgba(205, 180, 219, 0.2));
 }
 
 .welcome-logo {

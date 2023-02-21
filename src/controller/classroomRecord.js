@@ -119,7 +119,7 @@ async function Approval(ctx) {
         },
         include: [
             {
-                attributes: ['user_id','user_uuid'],
+                attributes: ['user_id', 'user_uuid'],
                 model: UserModel,
             }
         ],
@@ -183,8 +183,8 @@ async function QueryList(ctx) {
             uuid: item.classroomRecord_uuid,
             user: item.user.user_name,
             classroom: item.classroom.classroom_number,
-            start: item.classroomRecord_start,
-            end: item.classroomRecord_end,
+            start: moment(item.classroomRecord_start).format('YYYY-MM-DD HH:mm:ss'),
+            end: moment(item.classroomRecord_end).format('YYYY-MM-DD HH:mm:ss'),
             status: item.classroomRecord_status,
             pass: item.classroomRecord_pass,
             finish: item.classroomRecord_finish,
@@ -225,6 +225,9 @@ async function UserQuery(ctx) {
                 model: ClassroomModel,
             },
         ],
+        order: [
+            ['classroomRecord_id', 'DESC']
+        ],
         where: where,
         offset: offset,
         limit: length,
@@ -235,8 +238,8 @@ async function UserQuery(ctx) {
             id: item.classroomRecord_id,
             uuid: item.classroomRecord_uuid,
             classroom: item.classroom.classroom_number,
-            start: item.classroomRecord_start,
-            end: item.classroomRecord_end,
+            start: moment(item.classroomRecord_start).format('YYYY-MM-DD HH:mm:ss'),
+            end: moment(item.classroomRecord_end).format('YYYY-MM-DD HH:mm:ss'),
             status: item.classroomRecord_status,
             pass: item.classroomRecord_pass,
             finish: item.classroomRecord_finish,
@@ -291,8 +294,38 @@ async function CancelApply(ctx) {
             }
         });
     });
-    schedule.scheduledJobs[`${user.user_uuid}_auto`].cancel();
-    ctx.success(null, '取消申请成功');
+    let scheduleJob = schedule.scheduledJobs[`${user.user_uuid}_auto`];
+    if (scheduleJob == undefined) {
+        let record = await ClassroomRecordModel.findOne({
+            where: {
+                classroomRecord_id: classroomRecordId,
+            }
+        });
+        if (!record.classroomRecord_status) {
+            await sequelize.transaction(async (t) => {
+                await ClassroomRecordModel.update({
+                    classroomRecord_status: true,
+                    classroomRecord_pass: false,
+                    classroomRecord_finish: true,
+                }, {
+                    where: {
+                        classroomRecord_id: record.classroomRecord_id,
+                    }
+                });
+                await UserModel.update({
+                    user_inApply: false,
+                }, {
+                    where: {
+                        user_id: user.user_id,
+                    }
+                });
+            });
+        }
+        return ctx.success(null, '取消申请成功');
+    } else {
+        scheduleJob.cancel();
+        return ctx.success(null, '取消申请成功');
+    }
 }
 
 module.exports = { Approval, QueryList, UserQuery, CancelApply };

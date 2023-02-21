@@ -1,4 +1,5 @@
 const ClassroomTypeModel = require('../model/classroomType');
+const ClassroomModel = require('../model/classroom');
 // 查询类型
 async function QueryList(ctx) {
     let classroomType = await ClassroomTypeModel.findAll();
@@ -38,12 +39,12 @@ async function Update(ctx) {
     if (admin.admin_authority == undefined) return ctx.unauthorized();
     let data = ctx.request.body;
     if (!data.name || !data.typeId || !data.capacity) return ctx.dataError();
-    let isExist = await ClassroomTypeModel.findOne({
-        where: {
-            classroomType_name: data.name,
-        }
-    });
-    if (isExist) return ctx.dataError(null, '类型名称已存在');
+    // let isExist = await ClassroomTypeModel.findOne({
+    //     where: {
+    //         classroomType_name: data.name,
+    //     }
+    // });
+    // if (isExist) return ctx.dataError(null, '类型名称已存在');
     isExist = await ClassroomTypeModel.findOne({
         where: {
             classroomType_id: data.typeId,
@@ -74,6 +75,12 @@ async function Delete(ctx) {
         }
     });
     if (!isExist) return ctx.dataError('类型ID错误');
+    let { count, rows } = await ClassroomModel.findAndCountAll({
+        where: {
+            classroom_type: data.typeId,
+        }
+    });
+    if (count > 0) return ctx.dataError(null, '存在绑定教室信息，不可删除');
     let result = await ClassroomTypeModel.destroy({
         where: {
             classroomType_id: data.typeId,

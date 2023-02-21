@@ -1,4 +1,5 @@
 const StituteModel = require('../model/stitute');
+const UserModel = require('../model/user')
 
 // 查询列表
 async function QueryList(ctx) {
@@ -71,6 +72,12 @@ async function Delete(ctx) {
             stitute_id: data.stituteId,
         }
     });
+    let { count, rows } = await UserModel.findAndCountAll({
+        where: {
+            user_stitute: data.stituteId,
+        }
+    });
+    if (count > 0) return ctx.dataError(null, '已存在绑定用户，请稍后删除');
     if (!isExist) return ctx.dataError(null, '学院ID错误');
     let result = await StituteModel.destroy({
         where: {

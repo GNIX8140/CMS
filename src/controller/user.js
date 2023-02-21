@@ -1,6 +1,7 @@
 const passport = require('../middleware/verification').passport;
 const UserModel = require('../model/user');
 const StituteModel = require('../model/stitute');
+const UserTypeEnum = require('../enumeration/userType').userType;
 const { Op } = require('sequelize');
 const crypto = require('crypto');
 
@@ -24,19 +25,19 @@ async function Profile(ctx) {
         where: {
             user_id: user.user_id
         },
-        include: [
-            {
-                attributes: ['stitute_name'],
-                model: StituteModel,
-            }
-        ]
+        // include: [
+        //     {
+        //         attributes: ['stitute_name'],
+        //         model: StituteModel,
+        //     }
+        // ]
     });
     if (!userProfile) return ctx.dataError(null, '未查询到用户资料');
     userProfile = {
         number: userProfile.user_number,
         email: userProfile.user_email,
         name: userProfile.user_name,
-        stitute: userProfile.stitute.stitute_name,
+        stitute: userProfile.user_stitute,
         authority: userProfile.user_authority,
     }
     return ctx.success(null, userProfile);
@@ -96,16 +97,19 @@ async function Update(ctx) {
         || data.number === undefined
         || data.email === undefined
         || data.name === undefined
-        || data.stitute === undefined) return ctx.dataError(null, '用户数据缺失');
+        || data.stitute === undefined
+        || data.authority === undefined) return ctx.dataError(null, '用户数据缺失');
     if (data.number == oldUser.user_number
         && data.email == oldUser.user_email
         && data.name == oldUser.user_name
-        && data.stitute == oldUser.user_stitute) return ctx.dataError(null, '用户数据无更新');
+        && data.stitute == oldUser.user_stitute
+        && data.authority == oldUser.user_authority) return ctx.dataError(null, '用户数据无更新');
     let result = await UserModel.update({
         user_number: data.number,
         user_email: data.email,
         user_name: data.name,
         user_stitute: data.stitute,
+        user_authority: data.authority
     }, {
         where: {
             user_id: userTemp.user_id,

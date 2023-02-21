@@ -1,5 +1,5 @@
 const ClassroomAreaModel = require('../model/classroomArea');
-
+const ClassroomModel = require('../model/classroom')
 // 查询列表
 async function QueryList(ctx) {
     let classroomArea = await ClassroomAreaModel.findAll();
@@ -71,6 +71,12 @@ async function Delete(ctx) {
             classroomArea_id: data.areaId,
         }
     });
+    let { count, rows } = await ClassroomModel.findAndCountAll({
+        where: {
+            classroom_area: data.areaId,
+        }
+    });
+    if (count > 0) return ctx.dataError(null, '存在绑定教室信息，不可删除');
     if (!isExist) return ctx.dataError(null, '区域ID错误');
     let result = await ClassroomAreaModel.destroy({
         where: {

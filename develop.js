@@ -49,7 +49,7 @@ async function initialization() {
         }))
             .use(KoaCors({
                 origin: function (ctx) {
-                    return 'https://192.168.1.100:8195';
+                    return 'https://192.168.1.67:4173';
                 },
                 maxAge: 5,
                 credentials: true,

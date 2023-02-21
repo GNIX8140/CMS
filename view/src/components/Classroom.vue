@@ -14,7 +14,8 @@
                 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar">
                     <div class="offcanvas-header">
                         <h5 class="offcanvas-title" id="offcanvasNavbarLabel">您好:{{ userData.name }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                        <button ref="navClose" type="button" class="btn-close" data-bs-dismiss="offcanvas"
+                            aria-label="Close"></button>
                     </div>
                     <div class="offcanvas-body">
                         <button class="btn" :class="{ 'menu-active': mainMenu == 'classroom' }"
@@ -23,7 +24,9 @@
                             @click="switchMainMenu('record')">申请记录</button>
                         <button class="btn" :class="{ 'menu-active': mainMenu == 'profile' }"
                             @click="switchMainMenu('profile')">个人资料</button>
-                        <button class="btn">退出登录</button>
+                        <button class="btn" :class="{ 'menu-active': mainMenu == 'password' }"
+                            @click="switchMainMenu('password')">修改密码</button>
+                        <button class="btn" @click="logout">退出登录</button>
                     </div>
                 </div>
             </div>
@@ -36,10 +39,14 @@
                     @click="switchMainMenu('record')">申请记录</button>
                 <button class="btn" :class="{ 'menu-active': mainMenu == 'profile' }"
                     @click="switchMainMenu('profile')">个人资料</button>
+                <button class="btn" :class="{ 'menu-active': mainMenu == 'password' }"
+                    @click="switchMainMenu('password')">修改密码</button>
             </div>
             <div class="main-right">
-                <ClassroomList v-if="mainMenu == 'classroom'" :classroomList="classroomList" :areaList="areaList"
-                    :typeList="typeList" @queryClassroomList="queryClassroomList" />
+                <ClassroomList v-if="mainMenu == 'classroom'" :type="'classroom'" @showAlertMsg="showAlertMsg" />
+                <RecordList v-if="mainMenu == 'record'" @showAlertMsg="showAlertMsg" />
+                <UserProfile v-if="mainMenu == 'profile'" @showAlertMsg="showAlertMsg" />
+                <Password v-if="mainMenu == 'password'" :type="'user'" @showAlertMsg="showAlertMsg" />
             </div>
         </div>
     </div>
@@ -49,14 +56,16 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios';
 import ClassroomList from './ClassroomList.vue'
+import RecordList from './RecordList.vue'
+import UserProfile from './UserProfile.vue'
+import Password from './Password.vue'
+import route from '../router/index'
 axios.defaults.withCredentials = true;
 const userData = ref();
 const alertMsg = ref(null);
 const alertMsgDiv = ref();
 const mainMenu = ref('classroom');
-const classroomList = ref();
-const areaList = ref();
-const typeList = ref();
+const navClose = ref();
 let alertTimer = null;
 onMounted(async () => {
     await axios.get(`${window.ServerURL}/user/profile`).then(res => {
@@ -73,41 +82,10 @@ onMounted(async () => {
     }).catch(err => {
         console.log(err);
     });
-    queryClassroomList(1, 10);
-    queryAreaList();
-    queryTypeList();
 });
-function queryClassroomList(page, length) {
-    axios.get(`${window.ServerURL}/classroom/queryList`, {
-        params: {
-            page: page,
-            length: length,
-        }
-    }).then(res => {
-        if (res.data.status != 1) {
-            showAlertMsg(res.data.detail);
-        }
-        return classroomList.value = res.data.data;
-    });
-}
-function queryAreaList() {
-    axios.get(`${window.ServerURL}/area/queryList`).then(res => {
-        if (res.data.status != 1) {
-            showAlertMsg(res.data.detail);
-        }
-        return areaList.value = res.data.data;
-    });
-}
-function queryTypeList() {
-    axios.get(`${window.ServerURL}/type/queryList`).then(res => {
-        if (res.data.status != 1) {
-            showAlertMsg(res.data.detail);
-        }
-        return typeList.value = res.data.data;
-    });
-}
 function switchMainMenu(name) {
     mainMenu.value = name;
+    navClose.value.click();
 }
 function showAlertMsg(msg) {
     alertMsg.value = msg;
@@ -121,13 +99,17 @@ function showAlertMsg(msg) {
         alertMsgDiv.value.style = "top: -60px";
     }, 1000 * 2);
 }
+function logout() {
+    axios.get(`${window.ServerURL}/logout`);
+    route.push({
+        path: '/login',
+    });
+}
 </script>
 
-<style>
+<style scoped>
 @media screen and (max-width: 600px) {
-    .classroom-body {
-        padding: 12px 8px;
-    }
+
 
     .classroom-title {
         height: 68px;
@@ -144,24 +126,26 @@ function showAlertMsg(msg) {
 }
 
 @media screen and (min-width: 600px) and (max-width: 1200px) {
-    .classroom-body {
-        padding: 16px 22px;
-    }
 
     .classroom-title {
         height: 68px;
         padding: 0px 18px;
     }
+
+    .menu-active {
+        font-size: 1.2rem !important;
+    }
 }
 
 @media screen and (min-width: 1200px) {
-    .classroom-body {
-        padding: 18px 24px;
-    }
 
     .classroom-title {
         height: 68px;
         padding: 0px 26px;
+    }
+
+    .menu-active {
+        font-size: 1.2rem !important;
     }
 }
 
@@ -171,17 +155,18 @@ function showAlertMsg(msg) {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-image: linear-gradient(to bottom right, rgba(162, 210, 255, 0.4), rgba(205, 180, 219, 0.4));
+    background-image: linear-gradient(to bottom right, rgba(162, 210, 255, 0.2), rgba(205, 180, 219, 0.2));
 }
 
 .classroom-body .alert {
-    position: absolute;
+    position: fixed;
     border-radius: 18px;
     font-size: 1rem;
     top: -60px;
     opacity: 0.9;
     width: 90%;
     box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.26);
+    z-index: 100;
     transition: all 0.2s linear;
 }
 
@@ -190,7 +175,6 @@ function showAlertMsg(msg) {
     display: flex;
     flex-direction: row;
     align-items: center;
-    border-radius: 18px;
     border: 1px solid rgba(0, 0, 0, 0.2);
     box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.26);
     background-color: rgba(255, 255, 255, 0.496);
@@ -228,21 +212,18 @@ function showAlertMsg(msg) {
     margin: 8px 0px;
     border-radius: 12px;
     border: 1px solid rgba(0, 0, 0, 0.2);
-    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.26);
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.1);
 }
 
 .classroom-main {
     border: 1px solid rgba(0, 0, 0, 0.2);
     box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.26);
-    border-radius: 18px;
     width: 100%;
-    min-height: 80vh;
-    margin-top: 28px;
+    min-height: calc(100vh - 68px);
     background-color: rgba(255, 255, 255, 0.8);
     display: flex;
     flex-direction: row;
     justify-content: center;
-    align-items: center;
 }
 
 .classroom-main .main-left {
@@ -259,12 +240,12 @@ function showAlertMsg(msg) {
 
 .classroom-main .main-left button {
     width: 100%;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
     padding: 16px 0px;
     font-size: 1.1rem;
     font-weight: 500;
     letter-spacing: 1px;
     border-radius: 0px;
+    transition: all 0.1s linear;
 }
 
 .classroom-main .main-left button:hover {
@@ -276,7 +257,8 @@ function showAlertMsg(msg) {
 .menu-active {
     border-top: 1px solid rgba(0, 0, 0, 0.2);
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-    background-color: rgba(196, 196, 196, 0.1);
+    border-right: 6px solid rgba(16, 91, 205, 0.667) !important;
+    background-color: rgba(196, 196, 196, 0.2);
 }
 
 .classroom-main .main-right {
