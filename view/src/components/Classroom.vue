@@ -34,13 +34,14 @@
         <div class="classroom-main">
             <div class="main-left">
                 <button class="btn" :class="{ 'menu-active': mainMenu == 'classroom' }"
-                    @click="switchMainMenu('classroom')">教室列表</button>
-                <button class="btn" :class="{ 'menu-active': mainMenu == 'record' }"
-                    @click="switchMainMenu('record')">申请记录</button>
-                <button class="btn" :class="{ 'menu-active': mainMenu == 'profile' }"
-                    @click="switchMainMenu('profile')">个人资料</button>
-                <button class="btn" :class="{ 'menu-active': mainMenu == 'password' }"
-                    @click="switchMainMenu('password')">修改密码</button>
+                    @click="switchMainMenu('classroom')">
+                    <i class="las la-home"></i>教室列表</button>
+                <button class="btn" :class="{ 'menu-active': mainMenu == 'record' }" @click="switchMainMenu('record')">
+                    <i class="las la-list"></i>申请记录</button>
+                <button class="btn" :class="{ 'menu-active': mainMenu == 'profile' }" @click="switchMainMenu('profile')">
+                    <i class="las la-id-badge"></i>个人资料</button>
+                <button class="btn" :class="{ 'menu-active': mainMenu == 'password' }" @click="switchMainMenu('password')">
+                    <i class="las la-key"></i>修改密码</button>
             </div>
             <div class="main-right">
                 <ClassroomList v-if="mainMenu == 'classroom'" :type="'classroom'" @showAlertMsg="showAlertMsg" />
@@ -175,7 +176,7 @@ function logout() {
     display: flex;
     flex-direction: row;
     align-items: center;
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.26);
     background-color: rgba(255, 255, 255, 0.496);
 }
@@ -216,7 +217,6 @@ function logout() {
 }
 
 .classroom-main {
-    border: 1px solid rgba(0, 0, 0, 0.2);
     box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.26);
     width: 100%;
     min-height: calc(100vh - 68px);

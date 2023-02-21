@@ -44,23 +44,25 @@
         <div class="control-main">
             <div class="main-left">
                 <button class="btn" :class="{ 'menu-active': mainMenu == 'classroom' }"
-                    @click="switchMainMenu('classroom')">教室列表</button>
-                <button class="btn" :class="{ 'menu-active': mainMenu == 'record' }"
-                    @click="switchMainMenu('record')">申请审核</button>
-                <button class="btn" :class="{ 'menu-active': mainMenu == 'area' }"
-                    @click="switchMainMenu('area')">教室区域</button>
-                <button class="btn" :class="{ 'menu-active': mainMenu == 'type' }"
-                    @click="switchMainMenu('type')">教室类型</button>
-                <button class="btn" :class="{ 'menu-active': mainMenu == 'stitute' }"
-                    @click="switchMainMenu('stitute')">学院信息</button>
-                <button class="btn" :class="{ 'menu-active': mainMenu == 'profile' }"
-                    @click="switchMainMenu('profile')">个人资料</button>
+                    @click="switchMainMenu('classroom')">
+                    <i class="las la-home"></i>教室列表</button>
+                <button class="btn" :class="{ 'menu-active': mainMenu == 'record' }" @click="switchMainMenu('record')">
+                    <i class="las la-list-alt"></i>申请审核</button>
+                <button class="btn" :class="{ 'menu-active': mainMenu == 'area' }" @click="switchMainMenu('area')">
+                    <i class="las la-map"></i>教室区域</button>
+                <button class="btn" :class="{ 'menu-active': mainMenu == 'type' }" @click="switchMainMenu('type')">
+                    <i class="las la-th-list"></i>教室类型</button>
+                <button class="btn" :class="{ 'menu-active': mainMenu == 'stitute' }" @click="switchMainMenu('stitute')">
+                    <i class="las la-university"></i>学院信息</button>
+                <button class="btn" :class="{ 'menu-active': mainMenu == 'profile' }" @click="switchMainMenu('profile')">
+                    <i class="las la-id-badge"></i>个人资料</button>
                 <button class="btn" :class="{ 'menu-active': mainMenu == 'addClassroom' }"
-                    @click="switchMainMenu('addClassroom')">添加教室</button>
-                <button class="btn" :class="{ 'menu-active': mainMenu == 'password' }"
-                    @click="switchMainMenu('password')">修改密码</button>
-                <button class="btn" :class="{ 'menu-active': mainMenu == 'addAdmin' }"
-                    @click="switchMainMenu('addAdmin')">添加管理员</button>
+                    @click="switchMainMenu('addClassroom')">
+                    <i class="las la-plus-circle"></i>添加教室</button>
+                <button class="btn" :class="{ 'menu-active': mainMenu == 'password' }" @click="switchMainMenu('password')">
+                    <i class="las la-key"></i>修改密码</button>
+                <button class="btn" :class="{ 'menu-active': mainMenu == 'addAdmin' }" @click="switchMainMenu('addAdmin')">
+                    <i class="las la-user-shield"></i>添加管理员</button>
             </div>
             <div class="main-right">
                 <ClassroomList v-if="mainMenu == 'classroom'" :type="'control'" @showAlertMsg="showAlertMsg" />
@@ -205,7 +207,7 @@ function logout() {
     display: flex;
     flex-direction: row;
     align-items: center;
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.26);
     background-color: rgba(255, 255, 255, 0.496);
 }
@@ -246,7 +248,6 @@ function logout() {
 }
 
 .control-main {
-    border: 1px solid rgba(0, 0, 0, 0.2);
     box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.26);
     width: 100%;
     min-height: calc(100vh - 68px);
@@ -282,7 +283,6 @@ function logout() {
     border-top: 1px solid rgba(0, 0, 0, 0.2);
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
     background-color: rgba(179, 179, 179, 0.1);
-    font-size: 1.2rem;
 }
 
 .menu-active {
