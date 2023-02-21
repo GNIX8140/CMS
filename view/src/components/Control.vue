@@ -207,7 +207,7 @@ function logout() {
     display: flex;
     flex-direction: row;
     align-items: center;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.2);
     box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.26);
     background-color: rgba(255, 255, 255, 0.496);
 }

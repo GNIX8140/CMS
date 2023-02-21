@@ -6,6 +6,7 @@
         <div class="dashboard-title">
             <img src="../assets/logo.svg">
             <router-link to="/"><span class="title-span">数据面板</span></router-link>
+            <div v-if="dashboardData" class="time pc">更新时间: {{ dashboardData.time }}</div>
         </div>
         <div class="dashboard-pc">
             <div class="panel-left">
@@ -29,12 +30,15 @@
 
 <script setup>
 import axios from 'axios';
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router';
 import route from '../router/index'
+import moment from 'moment';
 import * as echarts from 'echarts'
+import { left } from '@popperjs/core';
 const dashboardData = ref();
 const dataBackup = ref({
+    time: moment().format('YYYY-MM-DD HH:mm:ss'),
     user: {
         inActive: 148,
         unActive: 127,
@@ -59,12 +63,38 @@ const dataBackup = ref({
 const alertMsg = ref();
 const alertMsgDiv = ref();
 let alertTimer = null;
+let active, inApply, inUse, useRate, recordHistory, topUse;
+let interval = null;
 onMounted(() => {
+    active = echarts.init(document.getElementById('panel-user-active'));
+    inApply = echarts.init(document.getElementById('panel-user-inApply'));
+    inUse = echarts.init(document.getElementById('panel-classroom-inUse'));
+    useRate = echarts.init(document.getElementById('panel-classroom-rate'));
+    recordHistory = echarts.init(document.getElementById('panel-record-history'));
+    topUse = echarts.init(document.getElementById('panel-classroom-topUse'));
     queryDashboard();
-    setInterval(() => {
+    interval = setInterval(() => {
         queryDashboard();
     }, 1000 * 10);
+    window.addEventListener('resize', () => {
+        active.resize();
+        inApply.resize();
+        inUse.resize();
+        useRate.resize();
+        recordHistory.resize();
+        topUse.resize();
+    })
 });
+onUnmounted(() => {
+    active.dispose();
+    inApply.dispose();
+    inUse.dispose();
+    useRate.dispose();
+    recordHistory.dispose();
+    topUse.dispose();
+    clearInterval(interval);
+    interval = null;
+})
 function queryDashboard() {
     axios.get(`${window.ServerURL}/dashboard/query`).then(res => {
         if (res.data.status != 1) {
@@ -82,7 +112,6 @@ function queryDashboard() {
 function drawDashboard() {
     let userData = dashboardData.value.user;
     // 活跃用户
-    let active = echarts.init(document.getElementById('panel-user-active'));
     active.setOption({
         title: {
             text: '用户活跃数据',
@@ -98,8 +127,7 @@ function drawDashboard() {
         series: [
             {
                 type: 'pie',
-                // radius: '50%',
-                radius: [30, 120],
+                radius: ['40%', '70%'],
                 data: [
                     { value: userData.inActive, name: '活跃用户' },
                     { value: userData.unActive, name: '未活跃用户' },
@@ -115,7 +143,6 @@ function drawDashboard() {
         ]
     });
     // 用户申请数据
-    var inApply = echarts.init(document.getElementById('panel-user-inApply'));
     inApply.setOption({
         title: {
             text: '用户申请数据',
@@ -161,7 +188,6 @@ function drawDashboard() {
     });
     let classroomData = dashboardData.value.classroom;
     // 教室申请数据
-    let inUse = echarts.init(document.getElementById('panel-classroom-inUse'));
     inUse.setOption({
         tooltip: {
             trigger: 'item',
@@ -179,7 +205,7 @@ function drawDashboard() {
         series: [
             {
                 type: 'pie',
-                radius: [50, 120],
+                radius: ['40%', '70%'],
                 center: ['50%', '50%'],
                 roseType: 'area',
                 itemStyle: {
@@ -194,7 +220,6 @@ function drawDashboard() {
         ]
     });
     // 教室当前使用率
-    let useRate = echarts.init(document.getElementById('panel-classroom-rate'));
     useRate.setOption({
         title: {
             text: '教室使用效率',
@@ -237,7 +262,6 @@ function drawDashboard() {
     });
     let recordData = dashboardData.value.record;
     // 申请数量历史数据
-    let recordHistory = echarts.init(document.getElementById('panel-record-history'));
     recordHistory.setOption({
         color: ['#80FFA5'],
         title: {
@@ -253,7 +277,8 @@ function drawDashboard() {
             }
         },
         legend: {
-            data: ['Line 1']
+            data: ['Line 1'],
+            left: 'right',
         },
         grid: {
             left: '3%',
@@ -305,7 +330,6 @@ function drawDashboard() {
     });
     let topUseData = dashboardData.value.topUse;
     // 教室申请数量排行
-    let topUse = echarts.init(document.getElementById('panel-classroom-topUse'));
     topUse.setOption({
         title: {
             text: '教室申请数量排行'
@@ -345,6 +369,9 @@ function showAlertMsg(msg) {
 
 <style scoped>
 @media screen and (max-width: 600px) {
+    .pc {
+        display: none;
+    }
 
     .dashboard-title {
         height: 68px;
@@ -361,7 +388,6 @@ function showAlertMsg(msg) {
 }
 
 @media screen and (min-width: 600px) and (max-width: 1200px) {
-
     .dashboard-title {
         height: 68px;
         padding: 0px 18px;
@@ -369,7 +395,6 @@ function showAlertMsg(msg) {
 }
 
 @media screen and (min-width: 1200px) {
-
     .dashboard-title {
         height: 68px;
         padding: 0px 26px;
@@ -438,35 +463,138 @@ function showAlertMsg(msg) {
     box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.26);
     transition: all 0.3s linear;
 }
+
+.dashboard-title .time {
+    margin-left: auto;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
 </style>
 
 <style scoped>
+@media screen and (max-width: 600px) {
+    .dashboard-pc {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .dashboard-pc .panel-left,
+    .dashboard-pc .panel-right,
+    .dashboard-pc .panel-middle {
+        width: 100%;
+        height: 800px;
+    }
+
+    #panel-user-inApply,
+    #panel-classroom-topUse,
+    #panel-classroom-rate {
+        margin-top: 18px !important;
+    }
+
+    #panel-user-active,
+    #panel-user-inApply,
+    #panel-classroom-inUse,
+    #panel-classroom-rate,
+    #panel-record-history,
+    #panel-classroom-topUse {
+        height: 50%;
+    }
+
+    #panel-user-inApply,
+    #panel-classroom-rate,
+    #panel-classroom-topUse {
+        margin-top: auto;
+    }
+}
+
+@media screen and (min-width: 600px) and (max-width: 1200px) {
+    .dashboard-pc {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .dashboard-pc .panel-left,
+    .dashboard-pc .panel-right,
+    .dashboard-pc .panel-middle {
+        width: 100%;
+        height: 800px;
+    }
+
+    #panel-user-inApply,
+    #panel-classroom-topUse,
+    #panel-classroom-rate {
+        margin-top: 18px !important;
+    }
+
+    #panel-user-active,
+    #panel-user-inApply,
+    #panel-classroom-inUse,
+    #panel-classroom-rate,
+    #panel-record-history,
+    #panel-classroom-topUse {
+        height: 50%;
+    }
+
+    #panel-user-inApply,
+    #panel-classroom-rate,
+    #panel-classroom-topUse {
+        margin-top: auto;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .dashboard-pc {
+        flex-direction: row;
+        height: calc(100vh - 68px);
+    }
+
+    .dashboard-pc .panel-left,
+    .dashboard-pc .panel-right {
+        width: 25%;
+    }
+
+    .dashboard-pc .panel-middle {
+        width: 50%;
+        height: 100%;
+        padding: 12px;
+    }
+
+    #panel-user-active,
+    #panel-user-inApply,
+    #panel-classroom-inUse,
+    #panel-classroom-rate,
+    #panel-record-history,
+    #panel-classroom-topUse {
+        height: 49%;
+    }
+
+    #panel-user-inApply,
+    #panel-classroom-rate,
+    #panel-classroom-topUse {
+        margin-top: auto;
+    }
+}
+
 .dashboard-pc {
     width: 100%;
-    height: calc(100vh - 68px);
     border: 1px solid rgba(0, 0, 0, 0.2);
     box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.26);
     background-color: rgba(255, 255, 255, 0.496);
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
 }
 
 .dashboard-pc .panel-left,
 .dashboard-pc .panel-right {
-    width: 25%;
-    height: 100%;
     display: flex;
     flex-direction: column;
     padding: 12px;
 }
 
 .dashboard-pc .panel-middle {
-    width: 50%;
-    height: 100%;
-    padding: 12px;
     display: flex;
     flex-direction: column;
+    padding: 12px;
 }
 
 
@@ -476,7 +604,6 @@ function showAlertMsg(msg) {
 #panel-classroom-rate,
 #panel-record-history,
 #panel-classroom-topUse {
-    height: 49%;
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 16px;
     padding: 18px;

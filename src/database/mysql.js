@@ -6,6 +6,7 @@ Sequelize.useCLS(namespace);
 const mysql = new Sequelize('cms', 'cms', 'Zxc1290754123', {
     dialect: 'mysql',
     host: 'localhost',
+    port: 3307,
     timezone: '+08:00',
     pool: {
         max: 5,

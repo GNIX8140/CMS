@@ -11,6 +11,7 @@ async function HandleDashboardData() {
     try {
         let todayStart = moment().format('YYYY-MM-DD 00:00:00');
         let data = {
+            time: moment().format('YYYY-MM-DD HH:mm:ss'),
             user: {
                 inActive: 0,
                 unActive: 0,
