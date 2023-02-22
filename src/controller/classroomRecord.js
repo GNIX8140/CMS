@@ -113,7 +113,7 @@ async function Approval(ctx) {
     let classroomApprovalList = await ClassroomRecordModel.findAll({
         where: {
             [Op.and]: [
-                { classroomRecord_classroom: record.classroomRecord_id },
+                { classroomRecord_classroom: record.classroomRecord_classroom },
                 { classroomRecord_status: false },
             ]
         },
