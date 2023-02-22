@@ -3,7 +3,7 @@
         <div class="list-table">
             <div class="description">
                 <span>教室</span>
-                <span>开始时间</span>
+                <span class="pc">开始时间</span>
                 <span>结束时间</span>
                 <span>审核</span>
                 <span>操作</span>
@@ -11,7 +11,7 @@
             <div class="table" v-if="recordList">
                 <div class="row" v-for="(item, index) in recordList.items">
                     <span>{{ item.classroom }}</span>
-                    <span>{{ item.start }}</span>
+                    <span class="pc">{{ item.start }}</span>
                     <span>{{ item.end }}</span>
                     <span v-show="!item.status">待审核</span>
                     <span v-show="item.status && !item.finish">使用中</span>
@@ -102,6 +102,9 @@ function queryNextPage() {
 
 <style scoped>
 @media screen and (max-width: 600px) {
+    .pc {
+        display: none !important;
+    }
 
     .list-table .description {
         padding: 8px 0px;
@@ -111,6 +114,10 @@ function queryNextPage() {
     .list-table .table .row *,
     .list-button-group button {
         font-size: 0.8rem;
+    }
+
+    .list-table .table .row span {
+        width: 25% !important;
     }
 
     .list-button-group * {

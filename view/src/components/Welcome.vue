@@ -10,13 +10,13 @@
         </div>
         <div class="welcome-btn-group">
             <router-link :to="{ path: '/login', query: { type: 'user' } }">
-                <button class="btn btn-primary btn-group-btn">申请教室</button>
+                <button class="btn btn-apply">申请教室</button>
             </router-link>
             <router-link to="/dashboard">
-                <button class="btn btn-secondary btn-group-btn">数据面板</button>
+                <button class="btn btn-dashboard">数据面板</button>
             </router-link>
             <router-link :to="{ path: '/login', query: { type: 'admin' } }">
-                <button class="btn btn-primary btn-group-btn">后台管理</button>
+                <button class="btn btn-control">后台管理</button>
             </router-link>
         </div>
     </div>
@@ -144,8 +144,29 @@
     border-radius: 14px;
     font-weight: 500;
     letter-spacing: 1px;
-    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.26);
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.15);
     transition: all 0.1s linear;
     opacity: 0.9;
+    border: 2px solid rgba(86, 145, 200, 0.8);
+    color: rgba(69, 127, 202, 1);
+    background-image: linear-gradient(to bottom right, rgba(100, 179, 244, 0.2), rgba(194, 229, 156, 0.2));
 }
+
+/* .btn-apply {
+    border: 2px solid rgba(86, 145, 200, 0.8);
+    color: rgba(69, 127, 202, 1);
+    background-image: linear-gradient(to bottom right, rgba(100, 179, 244, 0.2), rgba(194, 229, 156, 0.2));
+}
+
+.btn-dashboard {
+    border: 2px solid rgba(178, 69, 146, 0.8);
+    color: rgba(178, 69, 146, 1);
+    background-image: linear-gradient(to bottom right, rgba(237, 91, 194, 0.2), rgba(234, 205, 163, 0.3));
+}
+
+.btn-control {
+    border: 2px solid rgba(152, 79, 212, 0.8);
+    color: rgba(152, 79, 212, 1);
+    background-image: linear-gradient(to bottom right, rgba(17, 67, 87, 0.2), rgba(242, 148, 146, 0.2));
+} */
 </style>

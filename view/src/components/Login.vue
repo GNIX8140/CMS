@@ -5,9 +5,9 @@
         </div>
         <div class="login-container">
             <div class="login-left">
-                <span class="login-title" v-show="type=='user'">CMS 用户登录</span>
-                <span class="login-title" v-show="type=='admin'">CMS管理员登录</span>
-                <span class="login-title" v-show="type=='register'">CMS 用户注册</span>
+                <span class="login-title" v-show="type == 'user'">CMS 用户登录</span>
+                <span class="login-title" v-show="type == 'admin'">CMS管理员登录</span>
+                <span class="login-title" v-show="type == 'register'">CMS 用户注册</span>
                 <button class="login-change btn btn-primary" @click="type = 'admin'" v-show="type == 'user'">管理员登录</button>
                 <button class="login-change btn btn-primary" @click="type = 'user'" v-show="type == 'admin'">用户登录</button>
                 <button class="login-change btn btn-primary" @click="type = 'user'"
@@ -31,7 +31,7 @@
                     </div>
                     <div class="button-group">
                         <button class="btn btn-secondary" @click="type = 'register'">注册</button>
-                        <button class="btn btn-success" @click="login">登录</button>
+                        <button ref="userLoginBtn" class="btn btn-success" @click="login">登录</button>
                     </div>
                 </div>
                 <div class="login-admin" v-show="type == 'admin'">
@@ -44,7 +44,7 @@
                         <input ref="adminPassword" type="password" class="form-control" placeholder="密码">
                     </div>
                     <div class="button-group">
-                        <button class="btn btn-success" @click="login">登录</button>
+                        <button ref="adminLoginBtn" class="btn btn-success" @click="login">登录</button>
                     </div>
                 </div>
                 <div class="login-register" v-show="type == 'register'">
@@ -86,7 +86,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import route from '../router/index'
 import axios from 'axios'
@@ -97,6 +97,8 @@ const userAccount = ref();
 const userPassword = ref();
 const adminAccount = ref();
 const adminPassword = ref();
+const userLoginBtn = ref();
+const adminLoginBtn = ref();
 const alertMsg = ref();
 const stituteList = ref();
 const identityList = ref([
@@ -121,7 +123,22 @@ onMounted(() => {
         type.value = router.query.type;
     }
     QueryStituteList();
+    window.addEventListener('keydown', keyEvent)
 });
+onUnmounted(() => {
+    window.removeEventListener('keydown', keyEvent);
+});
+function keyEvent(e) {
+    if (e.key !== 'Enter') return;
+        if (type.value == 'user') {
+            userLoginBtn.value.click();
+            return;
+        }
+        if (type.value == 'admin') {
+            adminLoginBtn.value.click();
+            return;
+        }
+}
 async function QueryStituteList() {
     stituteList.value = await axios.get(`${window.ServerURL}/stitute/queryList`).then(res => {
         if (res.data.status != 1) throw Error('查询学院列表错误');

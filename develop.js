@@ -86,8 +86,9 @@ async function initialization() {
             .use(IndexRouter.routes())
             .use(IndexRouter.allowedMethods())
             .use(KoaStatic('/Nodejs/Public/CMS/Preview'))
-        await schedule.start();
-        return true;
+            await schedule.start(true);
+            // await schedule.start(false);
+            return true;
     } catch (err) {
         console.log(err);
         return false;

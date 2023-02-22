@@ -62,11 +62,13 @@ async function scheduleQueryDatabase() {
     return '数据面板定时任务-启动';
 }
 // 计划任务启动
-async function start() {
+async function start(recreate) {
     try {
         console.log(await mysqlConnectTest());
         console.log(await redisConnectTest());
-        // console.log(await dataModelSyncForce());
+        if (recreate) {
+            console.log(await dataModelSyncForce());
+        }
         console.log(await dataModelSyncAlert());
         console.log(await scheduleQueryDatabase());
         Dashboard.HandleDashboardData();

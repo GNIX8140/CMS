@@ -158,7 +158,7 @@ function applyClassroom(applyLength) {
     if (bind.value.applyId == null) return emits('showAlertMsg', '请选择申请教室');
     if (applyLength == null) return emits('showAlertMsg', '请选择申请时长');
     let startTime = moment().format('YYYY-MM-DD HH:mm:ss');
-    let endTime = moment().add(bind.value.applyLength, 'minutes').format('YYYY-MM-DD HH:mm:ss');
+    let endTime = moment().add(applyLength, 'seconds').format('YYYY-MM-DD HH:mm:ss');
     axios.get(`${window.ServerURL}/classroom/apply`, {
         params: {
             classroomId: bind.value.applyId,
@@ -228,7 +228,7 @@ function deleteClassroom(classroomId) {
     }
 
     .list-table .table .row span {
-        width: calc(100% / 6) !important;
+        width: calc(100% / 5) !important;
     }
 
     .list-button-group * {
