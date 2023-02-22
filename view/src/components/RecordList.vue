@@ -5,6 +5,7 @@
                 <span>教室</span>
                 <span class="pc">开始时间</span>
                 <span>结束时间</span>
+                <span class="pc">状态</span>
                 <span>审核</span>
                 <span>操作</span>
             </div>
@@ -13,9 +14,8 @@
                     <span>{{ item.classroom }}</span>
                     <span class="pc">{{ item.start }}</span>
                     <span>{{ item.end }}</span>
-                    <span v-show="!item.status">待审核</span>
-                    <span v-show="item.status && !item.finish">使用中</span>
-                    <span v-show="item.finish">已完成</span>
+                    <span class="pc">{{ item.status ? '已审核' : '待审核' }}</span>
+                    <span>{{ item.pass ? '通过':'未通过'}}</span>
                     <span>
                         <button class="btn btn-outline-primary" @click="refundsClassroom(item.id)"
                             :disabled="item.pass && item.finish" v-show="item.status && !item.finish">退还</button>
@@ -117,7 +117,7 @@ function queryNextPage() {
     }
 
     .list-table .table .row span {
-        width: 25% !important;
+        width: calc(100% / 4) !important;
     }
 
     .list-button-group * {
@@ -244,7 +244,7 @@ function queryNextPage() {
 }
 
 .list-table .table .row span {
-    width: 20%;
+    width: calc(100% / 6);
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;

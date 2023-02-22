@@ -40,7 +40,7 @@
                     <span>{{ areaList[item.area - 1].name }}</span>
                     <span>{{ typeList[item.type - 1].name }}</span>
                     <span class="pc">{{ item.capacity }}</span>
-                    <span>{{ item.available ? '可申请' : '使用中' }}</span>
+                    <span>{{ item.available ? '空闲' : '使用中' }}</span>
                     <span class="pc">{{ item.authority ? '需要审核' : '无需审核' }}</span>
                     <span v-if="type == 'classroom'">
                         <button class="btn btn-outline-primary"

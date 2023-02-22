@@ -16,6 +16,7 @@
                 <span>用户</span>
                 <span>开始时间</span>
                 <span>结束时间</span>
+                <span>状态</span>
                 <span class="pc">审核</span>
                 <span>操作</span>
             </div>
@@ -25,13 +26,13 @@
                     <span>{{ item.user }}</span>
                     <span>{{ item.start }}</span>
                     <span>{{ item.end }}</span>
-                    <span class="pc" v-show="!item.status">待审核</span>
-                    <span class="pc" v-show="item.status && !item.finish">使用中</span>
-                    <span class="pc" v-show="item.finish">已完成</span>
+                    <span>{{ item.status ? '已审核' : '未审核' }}</span>
+                    <span class="pc">{{ item.pass ? '通过' : '未通过' }}</span>
                     <span>
                         <button class="btn btn-outline-success" v-show="!item.status" @click="handleApply(item.id, true)">同意</button>
                         <button class="btn btn-outline-danger" v-show="!item.status" @click="handleApply(item.id, false)">拒绝</button>
                         <div v-show="item.finish">已结束</div>
+                        <div v-show="item.status && !item.finish">使用中</div>
                     </span>
                 </div>
             </div>
@@ -115,7 +116,7 @@ function handleApply(classroomRecordId, status) {
     }
 
     .list-table .table .row span {
-        width: calc(100% / 5) !important;
+        width: calc(100% / 6) !important;
     }
 
     .list-table .table .row .btn {
@@ -269,7 +270,7 @@ function handleApply(classroomRecordId, status) {
 }
 
 .list-table .table .row span {
-    width: calc(100% / 6);
+    width: calc(100% / 7);
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
