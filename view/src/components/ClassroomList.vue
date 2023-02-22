@@ -8,14 +8,14 @@
             <div class="input-group">
                 <span class="input-group-text">区域</span>
                 <select class="form-select" v-model="bind.area" @change="changeArea">
-                    <option value="null" selected>请选择</option>
+                    <option value="null" selected>全部</option>
                     <option v-for="(item, index) in areaList" :value="item.id">{{ item.name }}</option>
                 </select>
             </div>
             <div class="input-group">
                 <span class="input-group-text">类型</span>
                 <select class="form-select" v-model="bind.type" @change="changeType">
-                    <option value="null" selected>请选择</option>
+                    <option value="null" selected>全部</option>
                     <option v-for="(item, index) in typeList" :value="item.id">{{ item.name }}</option>
                 </select>
             </div>
