@@ -78,7 +78,6 @@ function updateCapacity() {
     bind.value.capacity = typeList.value[bind.value.type].capacity;
 }
 function addClassroom() {
-    console.log(bind.value);
     if (bind.value.number == null || bind.value.number.trim().length == 0) return emits('showAlertMsg', '请输入教室编号');
     if (bind.value.capacity == null) return emits('showAlertMsg', '请输入教室容纳人数');
     axios.post(`${window.ServerURL}/classroom/add`, {

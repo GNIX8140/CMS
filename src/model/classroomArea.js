@@ -13,7 +13,6 @@ const ClassroomAreaModel = sequelize.define('classroomArea', {
 }, {
     tableName: "cms_classroomArea",
     timestamps: true,
-    paranoid: true,
 });
 
 module.exports = ClassroomAreaModel;

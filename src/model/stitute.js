@@ -13,6 +13,5 @@ const StituteModel = sequelize.define('stitute', {
 }, {
     tableName: 'cms_stitute',
     timestamps: true,
-    paranoid: true,
 });
 module.exports = StituteModel;

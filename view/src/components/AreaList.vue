@@ -1,5 +1,6 @@
 <template>
     <div class="area-list-body">
+        <Confirm v-if="showConfirm" @confirmBack="deleteArea" />
         <div class="modal-body" v-if="showModal">
             <div class="modal-main">
                 <div class="modal-title">
@@ -23,17 +24,17 @@
         </div>
         <div class="list-table">
             <div class="description">
-                <span>ID</span>
+                <span class="pc">ID</span>
                 <span>名称</span>
                 <span>操作</span>
             </div>
             <div class="table" v-if="areaList">
                 <div class="row" v-for="(item, index) in areaList">
-                    <span>{{ item.id }}</span>
+                    <span class="pc">{{ item.id }}</span>
                     <span>{{ item.name }}</span>
                     <span>
                         <button class="btn btn-outline-success" @click="updateModal(index)">修改</button>
-                        <button class="btn btn-outline-danger" @click="deleteArea(item.id)">删除</button>
+                        <button class="btn btn-outline-danger" @click="deleteConfirm(item.id)">删除</button>
                     </span>
                 </div>
                 <div class="row" v-show="showAddInput">
@@ -52,6 +53,7 @@
 <script setup>
 import axios from 'axios';
 import { ref, onMounted } from 'vue'
+import Confirm from './Confirm.vue'
 const emits = defineEmits(['showAlertMsg']);
 const areaList = ref();
 const showModal = ref(false);
@@ -59,6 +61,8 @@ const modalId = ref();
 const modalName = ref();
 const showAddInput = ref(false);
 const addInputName = ref();
+const showConfirm = ref(false);
+const deleteId = ref();
 onMounted(() => {
     queryAreaList();
 });
@@ -104,22 +108,40 @@ function cancelAdd() {
     showAddInput.value = false;
     addInputName.value.value = null;
 }
-function deleteArea(areaId) {
-    if (areaId == null || areaId == undefined) return emits('showAlertMsg', '请确认删除区域ID');
+function deleteArea(status) {
+    if (!status) {
+        deleteId.value = null;
+        showConfirm.value = false;
+        return;
+    }
+    if (deleteId.value == null || deleteId.value == undefined) return emits('showAlertMsg', '请确认删除区域ID');
     axios.get(`${window.ServerURL}/area/delete`, {
         params: {
-            areaId: areaId,
+            areaId: deleteId.value,
         }
     }).then(res => {
         if (res.data.status != 1) return emits('showAlertMsg', res.data.detail);
         queryAreaList();
         emits('showAlertMsg', res.data.data);
+        showConfirm.value = false;
+        deleteId.value = null;
     })
+}
+function deleteConfirm(areaId) {
+    deleteId.value = areaId;
+    showConfirm.value = true;
 }
 </script>
 
 <style scoped>
 @media screen and (max-width: 600px) {
+    .pc {
+        display: none !important;
+    }
+
+    .list-table .table .row span {
+        width: 50% !important;
+    }
 
     .list-table .description {
         padding: 8px 0px;

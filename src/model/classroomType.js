@@ -18,6 +18,5 @@ const ClassroomTypeModel = sequelize.define('classroomType', {
 }, {
     tableName: 'cms_classroomType',
     timestamps: true,
-    paranoid: true,
 });
 module.exports = ClassroomTypeModel;

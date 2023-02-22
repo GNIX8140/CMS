@@ -3,6 +3,7 @@
         <Modal v-if="showModal" :type="modalType" :modalData="bind.modifyClassroom" :typeList="typeList"
             :areaList="areaList" @applyClassroom="applyClassroom" @closeModal="closeModal"
             @showAlertMsg="modalShowAlertMsg" />
+        <Confirm v-if="showConfirm" @confirmBack="deleteClassroom" />
         <div class="list-params">
             <div class="input-group">
                 <span class="input-group-text">区域</span>
@@ -49,7 +50,7 @@
                     <span v-if="type == 'control'">
                         <button class="btn btn-outline-primary"
                             @click="bind.modifyClassroom = item; showModal = true; modalType = 'modify'">修改</button>
-                        <button class="pc btn btn-outline-danger" @click="deleteClassroom(item.id)">删除</button>
+                        <button class="pc btn btn-outline-danger" @click="deleteConfirm(item.id)">删除</button>
                     </span>
                 </div>
             </div>
@@ -68,6 +69,7 @@ import { ref, onMounted } from 'vue';
 import moment from 'moment'
 import axios from 'axios';
 import Modal from './Modal.vue';
+import Confirm from './Confirm.vue'
 const props = defineProps(['type']);
 const emits = defineEmits(['showAlertMsg']);
 const bind = ref({
@@ -76,6 +78,7 @@ const bind = ref({
     number: null,
     applyId: null,
     modifyClassroom: null,
+    deleteId: null,
 });
 const pageInput = ref();
 const showModal = ref(false);
@@ -83,6 +86,7 @@ const modalType = ref();
 const areaList = ref();
 const typeList = ref();
 const classroomList = ref()
+const showConfirm = ref(false);
 onMounted(() => {
     queryAreaList();
     queryTypeList();
@@ -158,7 +162,7 @@ function applyClassroom(applyLength) {
     if (bind.value.applyId == null) return emits('showAlertMsg', '请选择申请教室');
     if (applyLength == null) return emits('showAlertMsg', '请选择申请时长');
     let startTime = moment().format('YYYY-MM-DD HH:mm:ss');
-    let endTime = moment().add(applyLength, 'seconds').format('YYYY-MM-DD HH:mm:ss');
+    let endTime = moment().add(applyLength, 'minutes').format('YYYY-MM-DD HH:mm:ss');
     axios.get(`${window.ServerURL}/classroom/apply`, {
         params: {
             classroomId: bind.value.applyId,
@@ -180,17 +184,28 @@ function closeModal() {
 function modalShowAlertMsg(msg) {
     emits('showAlertMsg', msg);
 }
-function deleteClassroom(classroomId) {
-    if (classroomId == undefined) return emits('showAlertMsg', '删除教室ID错误');
+function deleteClassroom(status) {
+    if (!status) {
+        showConfirm.value = false;
+        bind.value.deleteId = null;
+        return;
+    }
+    if (bind.value.deleteId == undefined) return emits('showAlertMsg', '删除教室ID错误');
     axios.get(`${window.ServerURL}/classroom/delete`, {
         params: {
-            classroomId: classroomId,
+            classroomId: bind.value.deleteId,
         }
     }).then(res => {
         if (res.data.status != 1) return emits('showAlertMsg', res.data.detail);
         emits('showAlertMsg', res.data.data);
         queryClassroomList(classroomList.value.num, 10, bind.value.area, bind.value.type, bind.value.number);
+        showConfirm.value = false;
+        bind.value.deleteId = null;
     })
+}
+function deleteConfirm(id) {
+    showConfirm.value = true;
+    bind.value.deleteId = id;
 }
 </script>
 

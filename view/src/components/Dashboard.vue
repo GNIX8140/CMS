@@ -31,11 +31,8 @@
 <script setup>
 import axios from 'axios';
 import { ref, onMounted, onUnmounted } from 'vue'
-import { useRoute } from 'vue-router';
-import route from '../router/index'
 import moment from 'moment';
 import * as echarts from 'echarts'
-import { left } from '@popperjs/core';
 const dashboardData = ref();
 const dataBackup = ref({
     time: moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -127,7 +124,16 @@ function drawDashboard() {
         series: [
             {
                 type: 'pie',
-                radius: ['40%', '70%'],
+                radius: ['30%', '60%'],
+                itemStyle: {
+                    borderRadius: 10,
+                    borderColor: '#fff',
+                    borderWidth: 2
+                },
+                color: [
+                    '#6190E8',
+                    '#B06AB3',
+                ],
                 data: [
                     { value: userData.inActive, name: '活跃用户' },
                     { value: userData.unActive, name: '未活跃用户' },
@@ -158,31 +164,27 @@ function drawDashboard() {
         series: [
             {
                 type: 'pie',
-                radius: ['40%', '70%'],
-                avoidLabelOverlap: false,
+                radius: ['30%', '60%'],
                 itemStyle: {
                     borderRadius: 10,
                     borderColor: '#fff',
                     borderWidth: 2
                 },
-                label: {
-                    show: false,
-                    position: 'center'
-                },
-                emphasis: {
-                    label: {
-                        show: true,
-                        fontSize: 40,
-                        fontWeight: 'bold'
-                    }
-                },
-                labelLine: {
-                    show: false
-                },
+                color: [
+                    '#43C6AC',
+                    '#a8c0ff',
+                ],
                 data: [
-                    { value: userData.inUse, name: '使用中' },
+                    { value: userData.inUse, name: '申请/使用中' },
                     { value: userData.unUse, name: '未申请' },
-                ]
+                ],
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
             }
         ]
     });
@@ -197,7 +199,8 @@ function drawDashboard() {
             left: 'left'
         },
         legend: {
-            top: 'bottom'
+            orient: 'vertical',
+            left: 'right'
         },
         toolbox: {
             show: true,
@@ -205,58 +208,69 @@ function drawDashboard() {
         series: [
             {
                 type: 'pie',
-                radius: ['40%', '70%'],
-                center: ['50%', '50%'],
-                roseType: 'area',
+                radius: ['30%', '60%'],
                 itemStyle: {
-                    borderRadius: 8
+                    borderRadius: 10,
+                    borderColor: '#fff',
+                    borderWidth: 2
                 },
+                color: [
+                    '#EC6EAD',
+                    '#F3904F',
+                    '#ffd89b',
+                ],
                 data: [
                     { value: classroomData.inUse, name: '使用中' },
                     { value: classroomData.inApproval, name: '审核中' },
                     { value: classroomData.unUse, name: '未使用' },
-                ]
+                ],
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
             }
         ]
     });
-    // 教室当前使用率
+    // 教室使用数据
     useRate.setOption({
         title: {
-            text: '教室使用效率',
+            text: '教室使用数据',
             left: 'left'
         },
         legend: {
             orient: 'vertical',
             left: 'right'
         },
+        tooltip: {
+            trigger: 'item',
+        },
         series: [
             {
                 type: 'pie',
-                radius: ['40%', '70%'],
-                avoidLabelOverlap: false,
+                radius: ['30%', '60%'],
                 itemStyle: {
                     borderRadius: 10,
                     borderColor: '#fff',
                     borderWidth: 2
                 },
-                label: {
-                    show: false,
-                    position: 'center'
-                },
-                emphasis: {
-                    label: {
-                        show: true,
-                        fontSize: 40,
-                        fontWeight: 'bold',
-                    }
-                },
-                labelLine: {
-                    show: false
-                },
+                color: [
+                    '#8e9eab',
+                    '#108dc7',
+                ],
                 data: [
-                    { value: classroomData.inUse, name: '使用率' },
-                    { value: classroomData.unUse, name: '空闲率' },
-                ]
+                    { value: classroomData.inUse, name: '使用中' },
+                    { value: classroomData.unUse, name: '可申请' },
+                ],
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
             }
         ]
     });
@@ -332,7 +346,10 @@ function drawDashboard() {
     // 教室申请数量排行
     topUse.setOption({
         title: {
-            text: '教室申请数量排行'
+            text: '教室申请次数'
+        },
+        tooltip: {
+            trigger: 'item',
         },
         xAxis: {
             type: 'category',
@@ -348,7 +365,17 @@ function drawDashboard() {
                 showBackground: true,
                 backgroundStyle: {
                     color: 'rgba(180, 180, 180, 0.2)'
-                }
+                },
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                    {
+                        offset: 0,
+                        color: 'rgb(115, 105, 205)'
+                    },
+                    {
+                        offset: 1,
+                        color: 'rgb(201, 191, 236)'
+                    }
+                ])
             }
         ]
     })

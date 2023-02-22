@@ -1,5 +1,6 @@
 <template>
     <div class="type-list-body">
+        <Confirm v-if="showConfirm" @confirmBack="deleteType" />
         <div class="modal-body" v-if="showModal">
             <div class="modal-main">
                 <div class="modal-title">
@@ -27,19 +28,19 @@
         </div>
         <div class="list-table">
             <div class="description">
-                <span>ID</span>
+                <span class="pc">ID</span>
                 <span>名称</span>
                 <span>容纳</span>
                 <span>操作</span>
             </div>
             <div class="table" v-if="typeList">
                 <div class="row" v-for="(item, index) in typeList">
-                    <span>{{ item.id }}</span>
+                    <span class="pc">{{ item.id }}</span>
                     <span>{{ item.name }}</span>
                     <span>{{ item.capacity }}</span>
                     <span>
                         <button class="btn btn-outline-success" @click="updateModal(index)">修改</button>
-                        <button class="btn btn-outline-danger" @click="deleteType(item.id)">删除</button>
+                        <button class="btn btn-outline-danger" @click="deleteConfirm(item.id)">删除</button>
                     </span>
                 </div>
                 <div class="row" v-show="showAddInput">
@@ -59,6 +60,7 @@
 <script setup>
 import axios from 'axios';
 import { ref, onMounted } from 'vue'
+import Confirm from './Confirm.vue'
 const emits = defineEmits(['showAlertMsg']);
 const typeList = ref();
 const showModal = ref(false);
@@ -68,6 +70,8 @@ const modalCapacity = ref();
 const showAddInput = ref(false);
 const addInputName = ref();
 const addInputCapacity = ref();
+const showConfirm = ref(false);
+const deleteId = ref();
 onMounted(() => {
     queryTypeList();
 });
@@ -119,22 +123,40 @@ function cancelAdd() {
     addInputName.value.value = null;
     addInputCapacity.value.value = null;
 }
-function deleteType(typeId) {
-    if (typeId == null || typeId == undefined) return emits('showAlertMsg', '请确认删除类型ID');
+function deleteType(status) {
+    if (!status) {
+        showConfirm.value = false;
+        deleteId.value = null;
+        return;
+    }
+    if (deleteId.value == null || deleteId.value == undefined) return emits('showAlertMsg', '请确认删除类型ID');
     axios.get(`${window.ServerURL}/type/delete`, {
         params: {
-            typeId: typeId,
+            typeId: deleteId.value,
         }
     }).then(res => {
         if (res.data.status != 1) return emits('showAlertMsg', res.data.detail);
         queryTypeList();
         emits('showAlertMsg', res.data.data);
+        deleteId.value = null;
+        showConfirm.value = false;
     })
+}
+function deleteConfirm(id) {
+    deleteId.value = id;
+    showConfirm.value = true;
 }
 </script>
 
 <style scoped>
 @media screen and (max-width: 600px) {
+    .pc {
+        display: none !important;
+    }
+
+    .list-table .table .row span {
+        width: 33% !important;
+    }
 
     .list-table .description {
         padding: 8px 0px;

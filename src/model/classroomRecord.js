@@ -52,7 +52,5 @@ const ClassroomRecordModel = sequelize.define('classroomRecord', {
     tableName: 'cms_classroomRecord',
     // 时间戳
     timestamps: true,
-    // 软删除
-    paranoid: true,
 });
 module.exports = ClassroomRecordModel;
