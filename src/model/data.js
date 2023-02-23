@@ -61,11 +61,33 @@ module.exports = async () => {
         user_number: '123',
         user_email: '123@163.com',
         user_password: crypto.createHash('md5').update('123').digest('hex'),
-        user_name: '测试用户',
+        user_name: '测试用户1',
         user_stitute: 1,
         user_authority: 0,
         user_inApply: false,
     });
+    // // 测试用户
+    // await UserModel.create({
+    //     user_uuid: crypto.randomUUID(),
+    //     user_number: '234',
+    //     user_email: '234@163.com',
+    //     user_password: crypto.createHash('md5').update('234').digest('hex'),
+    //     user_name: '测试用户2',
+    //     user_stitute: 2,
+    //     user_authority: 0,
+    //     user_inApply: false,
+    // });
+    // // 测试用户
+    // await UserModel.create({
+    //     user_uuid: crypto.randomUUID(),
+    //     user_number: '345',
+    //     user_email: '345@163.com',
+    //     user_password: crypto.createHash('md5').update('345').digest('hex'),
+    //     user_name: '测试用户3',
+    //     user_stitute: 2,
+    //     user_authority: 0,
+    //     user_inApply: false,
+    // });
     // 管理员
     await AdminModel.create({
         admin_uuid: crypto.randomUUID(),
@@ -74,7 +96,7 @@ module.exports = async () => {
         admin_password: crypto.createHash('md5').update('admin').digest('hex'),
         admin_authority: 10,
     });
-    // 教室 A区
+    // 多功能教室 A区
     for (let i = 1; i<=5; i++) {
         let number = `A0${i}`;
         await ClassroomModel.create({
@@ -83,6 +105,24 @@ module.exports = async () => {
             classroom_number: number,
             classroom_type: 4,
             classroom_capacity: 40,
+            classroom_authority: false,
+            classroom_available: true,
+        });
+    }
+    // 小型教室 A区
+    for (let i = 1; i <= 12; i++) {
+        let number;
+        if (i < 10) {
+            number = `A10${i}`;
+        } else {
+            number = `A1${i}`;
+        }
+        await ClassroomModel.create({
+            classroom_uuid: crypto.randomUUID(),
+            classroom_area: 1,
+            classroom_number: number,
+            classroom_type: 1,
+            classroom_capacity: 30,
             classroom_authority: false,
             classroom_available: true,
         });
@@ -141,6 +181,24 @@ module.exports = async () => {
             classroom_available: true,
         });
     }
+    // 多功能教室 C区
+    for (let i = 1; i <= 10; i++) {
+        let number;
+        if (i < 10) {
+            number = `C10${i}`;
+        } else {
+            number = `C1${i}`;
+        }
+        await ClassroomModel.create({
+            classroom_uuid: crypto.randomUUID(),
+            classroom_area: 3,
+            classroom_number: number,
+            classroom_type: 4,
+            classroom_capacity: 40,
+            classroom_authority: false,
+            classroom_available: true,
+        });
+    }
     // 实验室 D区
     for (let i = 1; i <= 8; i++) {
         let number = `D0${i}`;
@@ -154,4 +212,52 @@ module.exports = async () => {
             classroom_available: true,
         });
     }
+    // 小型教室 D区
+    for (let i = 1; i <= 8; i++) {
+        let number;
+        if (i < 10) {
+            number = `D10${i}`;
+        } else {
+            number = `D1${i}`;
+        }
+        await ClassroomModel.create({
+            classroom_uuid: crypto.randomUUID(),
+            classroom_area: 4,
+            classroom_number: number,
+            classroom_type: 1,
+            classroom_capacity: 30,
+            classroom_authority: false,
+            classroom_available: true,
+        });
+    }
+    // await ClassroomRecordModel.create({
+    //     classroomRecord_uuid: crypto.randomUUID(),
+    //     classroomRecord_user: 1,
+    //     classroomRecord_classroom: 1,
+    //     classroomRecord_start: moment().subtract(1, 'hours'),
+    //     classroomRecord_end: moment().add(1, 'minutes'),
+    //     classroomRecord_status: true,
+    //     classroomRecord_pass: true,
+    //     classroomRecord_finish: false,
+    // });
+    // await ClassroomRecordModel.create({
+    //     classroomRecord_uuid: crypto.randomUUID(),
+    //     classroomRecord_user: 2,
+    //     classroomRecord_classroom: 2,
+    //     classroomRecord_start: moment().subtract(1, 'hours'),
+    //     classroomRecord_end: moment().add(1, 'minutes'),
+    //     classroomRecord_status: false,
+    //     classroomRecord_pass: false,
+    //     classroomRecord_finish: false,
+    // });
+    // await ClassroomRecordModel.create({
+    //     classroomRecord_uuid: crypto.randomUUID(),
+    //     classroomRecord_user: 3,
+    //     classroomRecord_classroom: 2,
+    //     classroomRecord_start: moment().subtract(1, 'hours'),
+    //     classroomRecord_end: moment().add(1, 'minutes'),
+    //     classroomRecord_status: false,
+    //     classroomRecord_pass: false,
+    //     classroomRecord_finish: false,
+    // });
 }

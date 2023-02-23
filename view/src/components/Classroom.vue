@@ -82,6 +82,7 @@ onMounted(async () => {
         }
     }).catch(err => {
         console.log(err);
+        showAlertMsg('网络错误');
     });
 });
 function switchMainMenu(name) {

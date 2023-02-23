@@ -87,15 +87,12 @@ const areaList = ref();
 const typeList = ref();
 const classroomList = ref()
 const showConfirm = ref(false);
-onMounted(() => {
-    queryAreaList();
-    queryTypeList();
-    queryClassroomList(1, 10);
-    if (props.type == 'classroom') {
-
-    }
+onMounted(async () => {
+    await queryAreaList();
+    await queryTypeList();
+    await queryClassroomList(1, 10);
 });
-function queryClassroomList(page, length, area, type, number) {
+async function queryClassroomList(page, length, area, type, number) {
     let params = {
         page: page,
         length: length,
@@ -103,7 +100,7 @@ function queryClassroomList(page, length, area, type, number) {
     if (area != 'null') params.area = area;
     if (type != 'null') params.type = type;
     if (number != 'null') params.number = number;
-    axios.get(`${window.ServerURL}/classroom/queryList`, {
+    await axios.get(`${window.ServerURL}/classroom/queryList`, {
         params: params
     }).then(res => {
         if (res.data.status != 1) {
@@ -112,16 +109,16 @@ function queryClassroomList(page, length, area, type, number) {
         return classroomList.value = res.data.data;
     });
 }
-function queryAreaList() {
-    axios.get(`${window.ServerURL}/area/queryList`).then(res => {
+async function queryAreaList() {
+    await axios.get(`${window.ServerURL}/area/queryList`).then(res => {
         if (res.data.status != 1) {
             emits('showAlertMsg', res.data.detail);
         }
         return areaList.value = res.data.data;
     });
 }
-function queryTypeList() {
-    axios.get(`${window.ServerURL}/type/queryList`).then(res => {
+async function queryTypeList() {
+    await axios.get(`${window.ServerURL}/type/queryList`).then(res => {
         if (res.data.status != 1) {
             emits('showAlertMsg', res.data.detail);
         }

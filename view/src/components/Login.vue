@@ -1,83 +1,91 @@
 <template>
     <div class="login-body">
-        <div class="alert alert-primary" v-show="alertMsg">
+        <div class="alert alert-warning" ref="alertMsgDiv">
             {{ alertMsg }}
         </div>
-        <div class="login-container">
-            <div class="login-left">
-                <span class="login-title" v-show="type == 'user'">CMS 用户登录</span>
-                <span class="login-title" v-show="type == 'admin'">CMS管理员登录</span>
-                <span class="login-title" v-show="type == 'register'">CMS 用户注册</span>
-                <button class="login-change btn btn-primary" @click="type = 'admin'" v-show="type == 'user'">管理员登录</button>
-                <button class="login-change btn btn-primary" @click="type = 'user'" v-show="type == 'admin'">用户登录</button>
-                <button class="login-change btn btn-primary" @click="type = 'user'"
-                    v-show="type == 'register'">返回登录</button>
-            </div>
-            <div class="login-right">
-                <div class="login-sm-title" @click="switchType">
-                    <span v-show="type == 'admin'">管理员登录</span>
-                    <span v-show="type == 'user'">用户登录</span>
-                    <span v-show="type == 'register'">用户注册</span>
-                    <i class="las la-exchange-alt"></i>
+        <div class="login-nav">
+            <img src="../assets/logo.svg">
+            <router-link to="/"><span class="title-span">CMS</span></router-link>
+        </div>
+        <div class="login-main">
+            <div class="login-container">
+                <div class="login-left">
+                    <span class="login-title" v-show="type == 'user'">CMS 用户登录</span>
+                    <span class="login-title" v-show="type == 'admin'">CMS管理员登录</span>
+                    <span class="login-title" v-show="type == 'register'">CMS 用户注册</span>
+                    <button class="login-change btn btn-primary" @click="type = 'admin'"
+                        v-show="type == 'user'">管理员登录</button>
+                    <button class="login-change btn btn-primary" @click="type = 'user'"
+                        v-show="type == 'admin'">用户登录</button>
+                    <button class="login-change btn btn-primary" @click="type = 'user'"
+                        v-show="type == 'register'">返回登录</button>
                 </div>
-                <div class="login-user" v-show="type == 'user'">
-                    <div class="input-group">
-                        <span class="input-group-text">用户名</span>
-                        <input ref="userAccount" type="text" class="form-control" placeholder="学号/邮箱">
+                <div class="login-right">
+                    <div class="login-sm-title" @click="switchType">
+                        <span v-show="type == 'admin'">管理员登录</span>
+                        <span v-show="type == 'user'">用户登录</span>
+                        <span v-show="type == 'register'">用户注册</span>
+                        <i class="las la-exchange-alt"></i>
                     </div>
-                    <div class="input-group">
-                        <span class="input-group-text">密码</span>
-                        <input ref="userPassword" type="password" class="form-control" placeholder="密码">
+                    <div class="login-user" v-show="type == 'user'">
+                        <div class="input-group">
+                            <span class="input-group-text">用户名</span>
+                            <input ref="userAccount" type="text" class="form-control" placeholder="学号/邮箱">
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text">密码</span>
+                            <input ref="userPassword" type="password" class="form-control" placeholder="密码">
+                        </div>
+                        <div class="button-group">
+                            <button class="btn btn-secondary" @click="type = 'register'">注册</button>
+                            <button ref="userLoginBtn" class="btn btn-success" @click="login">登录</button>
+                        </div>
                     </div>
-                    <div class="button-group">
-                        <button class="btn btn-secondary" @click="type = 'register'">注册</button>
-                        <button ref="userLoginBtn" class="btn btn-success" @click="login">登录</button>
+                    <div class="login-admin" v-show="type == 'admin'">
+                        <div class="input-group">
+                            <span class="input-group-text">帐号</span>
+                            <input ref="adminAccount" type="text" class="form-control" placeholder="管理员帐号">
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text">密码</span>
+                            <input ref="adminPassword" type="password" class="form-control" placeholder="密码">
+                        </div>
+                        <div class="button-group">
+                            <button ref="adminLoginBtn" class="btn btn-success" @click="login">登录</button>
+                        </div>
                     </div>
-                </div>
-                <div class="login-admin" v-show="type == 'admin'">
-                    <div class="input-group">
-                        <span class="input-group-text">帐号</span>
-                        <input ref="adminAccount" type="text" class="form-control" placeholder="管理员帐号">
-                    </div>
-                    <div class="input-group">
-                        <span class="input-group-text">密码</span>
-                        <input ref="adminPassword" type="password" class="form-control" placeholder="密码">
-                    </div>
-                    <div class="button-group">
-                        <button ref="adminLoginBtn" class="btn btn-success" @click="login">登录</button>
-                    </div>
-                </div>
-                <div class="login-register" v-show="type == 'register'">
-                    <div class="input-group">
-                        <span class="input-group-text">编号</span>
-                        <input type="text" class="form-control" placeholder="学号/工号" v-model="registerData.number">
-                    </div>
-                    <div class="input-group">
-                        <span class="input-group-text">邮箱</span>
-                        <input type="text" class="form-control" placeholder="邮箱" v-model="registerData.email">
-                    </div>
-                    <div class="input-group">
-                        <span class="input-group-text">姓名</span>
-                        <input type="text" class="form-control" placeholder="真实姓名" v-model="registerData.name">
-                    </div>
-                    <div class="input-group">
-                        <span class="input-group-text">密码</span>
-                        <input type="password" class="form-control" placeholder="密码" v-model="registerData.password">
-                    </div>
-                    <div class="input-group">
-                        <span class="input-group-text">学院</span>
-                        <select class="form-select" aria-label="Default select example" v-model="registerData.stitute">
-                            <option v-for="(item, index) in stituteList" :value="item.id">{{ item.name }}</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <span class="input-group-text">身份</span>
-                        <select class="form-select" aria-label="Default select example" v-model="registerData.identity">
-                            <option v-for="(item, index) in identityList" :value="item.id">{{ item.name }}</option>
-                        </select>
-                    </div>
-                    <div class="button-group">
-                        <button class="btn btn-success" @click="register">注册</button>
+                    <div class="login-register" v-show="type == 'register'">
+                        <div class="input-group">
+                            <span class="input-group-text">编号</span>
+                            <input type="text" class="form-control" placeholder="学号/工号" v-model="registerData.number">
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text">邮箱</span>
+                            <input type="text" class="form-control" placeholder="邮箱" v-model="registerData.email">
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text">姓名</span>
+                            <input type="text" class="form-control" placeholder="真实姓名" v-model="registerData.name">
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text">密码</span>
+                            <input type="password" class="form-control" placeholder="密码" v-model="registerData.password">
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text">学院</span>
+                            <select class="form-select" aria-label="Default select example" v-model="registerData.stitute">
+                                <option v-for="(item, index) in stituteList" :value="item.id">{{ item.name }}</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text">身份</span>
+                            <select class="form-select" aria-label="Default select example" v-model="registerData.identity">
+                                <option v-for="(item, index) in identityList" :value="item.id">{{ item.name }}</option>
+                            </select>
+                        </div>
+                        <div class="button-group">
+                            <button class="btn btn-success" @click="register">注册</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -100,6 +108,7 @@ const adminPassword = ref();
 const userLoginBtn = ref();
 const adminLoginBtn = ref();
 const alertMsg = ref();
+const alertMsgDiv = ref();
 const stituteList = ref();
 const identityList = ref([
     { id: 0, name: '学生' },
@@ -130,14 +139,14 @@ onUnmounted(() => {
 });
 function keyEvent(e) {
     if (e.key !== 'Enter') return;
-        if (type.value == 'user') {
-            userLoginBtn.value.click();
-            return;
-        }
-        if (type.value == 'admin') {
-            adminLoginBtn.value.click();
-            return;
-        }
+    if (type.value == 'user') {
+        userLoginBtn.value.click();
+        return;
+    }
+    if (type.value == 'admin') {
+        adminLoginBtn.value.click();
+        return;
+    }
 }
 async function QueryStituteList() {
     stituteList.value = await axios.get(`${window.ServerURL}/stitute/queryList`).then(res => {
@@ -210,26 +219,28 @@ function switchType() {
 }
 function showAlertMsg(msg) {
     alertMsg.value = msg;
+    alertMsgDiv.value.style = "top: 48px";
     if (alertTimer) {
         clearTimeout(alertTimer);
         alertTimer = null;
     }
     alertTimer = setTimeout(() => {
         alertMsg.value = null;
+        alertMsgDiv.value.style = "top: -60px";
     }, 1000 * 2);
 }
 </script>
 
 <style scoped>
 @media screen and (max-width: 600px) {
+    .login-nav {
+        height: 68px;
+        padding: 0px 12px;
+    }
+
     .login-container {
         width: 340px;
         height: 520px;
-    }
-
-    .login-body .alert {
-        width: 340px;
-        top: 12px !important;
     }
 
     .login-left {
@@ -270,13 +281,14 @@ function showAlertMsg(msg) {
 }
 
 @media screen and (min-width: 600px) and (max-width: 1200px) {
+    .login-nav {
+        height: 68px;
+        padding: 0px 18px;
+    }
+
     .login-container {
         min-width: 600px;
         height: 460px;
-    }
-
-    .login-body .alert {
-        width: 580px;
     }
 
     .login-change {
@@ -300,13 +312,14 @@ function showAlertMsg(msg) {
 }
 
 @media screen and (min-width: 1200px) {
+    .login-nav {
+        height: 68px;
+        padding: 0px 26px;
+    }
+
     .login-container {
         width: 900px;
         height: 600px;
-    }
-
-    .login-body .alert {
-        width: 900px;
     }
 
     .login-user,
@@ -324,12 +337,37 @@ function showAlertMsg(msg) {
     }
 }
 
+.login-nav {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.26);
+    background-color: rgba(255, 255, 255, 0.496);
+}
+
+.login-nav a {
+    color: black;
+    text-decoration: none;
+}
+
+.login-nav img {
+    width: 48px;
+    height: 48px;
+}
+
+.login-nav .title-span {
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin-left: 12px;
+}
+
 .login-body {
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 100%;
-    justify-content: center;
     align-items: center;
     background-image: linear-gradient(to bottom right, rgba(162, 210, 255, 0.2), rgba(205, 180, 219, 0.2));
 }
@@ -338,8 +376,20 @@ function showAlertMsg(msg) {
     position: absolute;
     border-radius: 18px;
     font-size: 1rem;
-    top: 10%;
-    opacity: 0.8;
+    top: -60px;
+    opacity: 0.9;
+    width: 90%;
+    z-index: 100;
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.26);
+    transition: all 0.3s linear;
+}
+
+.login-main {
+    widows: 100%;
+    height: calc(100vh - 68px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .login-container {
@@ -430,5 +480,4 @@ function showAlertMsg(msg) {
 
 .button-group button:hover {
     padding: 8px 52px;
-}
-</style>
+}</style>

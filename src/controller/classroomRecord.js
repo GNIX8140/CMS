@@ -16,7 +16,7 @@ async function Approval(ctx) {
     let record = await ClassroomRecordModel.findOne({
         include: [
             {
-                attributes: ['user_uuid'],
+                attributes: ['user_id', 'user_uuid'],
                 model: UserModel,
             }
         ],
@@ -70,6 +70,14 @@ async function Approval(ctx) {
                 classroom_id: record.classroomRecord_classroom,
             }
         });
+        // 确认更新用户状态
+        await UserModel.update({
+            user_inApply: true,
+        }, {
+            where: {
+                user_id: record.user.user_id
+            }
+        })
     });
     // 设置更新教室可用状态定时器
     let user_uuid = await UserModel.findOne({

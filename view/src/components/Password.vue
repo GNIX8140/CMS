@@ -37,6 +37,7 @@ function updatePassword() {
         || newPassword.value.value.trim().length == 0) return emits('showAlertMsg', '请输入新密码');
     if (newPasswordRepeat.value.value == null
         || newPasswordRepeat.value.value.trim().length == 0) return emits('showAlertMsg', '请重复新密码');
+    if (newPasswordRepeat.value.value !== newPassword.value.value) return emits('showAlertMsg', '两次新密码不一致');
     axios.post(`${window.ServerURL}/${props.type}/modifyPassword`, {
         oldPassword: md5(oldPassword.value.value),
         newPassword: md5(newPassword.value.value),

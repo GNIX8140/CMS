@@ -3,6 +3,7 @@
 const schedule = require('node-schedule');
 // sequelize
 const sequelize = require('../database/mysql');
+const { Op } = require('sequelize')
 // 数据模型
 const UserModel = require('../model/user');
 const AdminModel = require('../model/admin');
@@ -17,6 +18,8 @@ const InitData = require('../model/data');
 const Redis = require('../database/redis');
 // Dashboard
 const Dashboard = require('../controller/dashboard');
+// Moment
+const moment = require('moment');
 // MySQL连接测试
 async function mysqlConnectTest() {
     await sequelize.authenticate();
@@ -61,6 +64,75 @@ async function scheduleQueryDatabase() {
     });
     return '数据面板定时任务-启动';
 }
+// 处理ClassroomRecord计划任务
+async function handleClassroomRecordSchduled() {
+    let recordList = await ClassroomRecordModel.findAll({
+        where: {
+            [Op.and]: [
+                {
+                    updatedAt: {
+                        [Op.between]: [moment().subtract(12, 'hours'), moment()],
+                    }
+                },
+                {
+                    classroomRecord_finish: false,
+                }
+            ]
+        },
+        include: [
+            {
+                attributes: ['user_id', 'user_uuid'],
+                model: UserModel,
+            },
+            {
+                attributes: ['classroom_id'],
+                model: ClassroomModel,
+            }
+        ]
+    });
+    recordList.forEach(item => {
+        let scheduleEndTime = moment(item.classroomRecord_end).format('YYYY M D H m s').split(' ');
+        let endDatetime = new Date(scheduleEndTime[0], scheduleEndTime[1] - 1, scheduleEndTime[2], scheduleEndTime[3], scheduleEndTime[4], scheduleEndTime[5]);
+        let scheduleName, classroomRecordUpdate;
+        if (item.classroomRecord_status) {
+            scheduleName = `${item.user.user_uuid}`;
+            classroomRecordUpdate = {
+                classroomRecord_finish: true,
+            }
+        } else {
+            scheduleName = `${item.user.user_uuid}_auto`;
+            classroomRecordUpdate = {
+                classroomRecord_status: true,
+                classroomRecord_pass: false,
+                classroomRecord_finish: true,
+            }
+        }
+        schedule.scheduleJob(scheduleName, endDatetime, async () => {
+            await sequelize.transaction(async (t) => {
+                await ClassroomModel.update({
+                    classroom_available: true,
+                }, {
+                    where: {
+                        classroom_id: item.classroom.classroom_id,
+                    }
+                });
+                await UserModel.update({
+                    user_inApply: false,
+                }, {
+                    where: {
+                        user_id: item.user.user_id,
+                    }
+                });
+                await ClassroomRecordModel.update(classroomRecordUpdate, {
+                    where: {
+                        classroomRecord_id: item.classroomRecord_id,
+                    }
+                });
+            });
+        });
+    });
+    return '申请记录复核-完成'
+}
 // 计划任务启动
 async function start(recreate) {
     try {
@@ -71,6 +143,7 @@ async function start(recreate) {
         }
         console.log(await dataModelSyncAlert());
         console.log(await scheduleQueryDatabase());
+        console.log(await handleClassroomRecordSchduled());
         Dashboard.HandleDashboardData();
         console.log('服务初始化-完成');
         return true;
