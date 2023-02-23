@@ -19,13 +19,13 @@
 > 部署工具：腾讯云、Docker、Nginx
 
 > 系统目录结构
->> ./src/ 系统后端源代码
->> ./view/ 系统前端源代码
->> ./app.js 系统后端入口文件
+>> ./src/ 系统后端源代码 \
+>> ./view/ 系统前端源代码 \
+>> ./app.js 系统后端入口文件 \
 >> ./Dockerfile 系统后端Docker镜像打包文件
 
 > 项目地址：
->> 主页：https://cms.server-xing.top
->> Gitee仓库：https://gitee.com/xing8140/cms
->> Github仓库：https://github.com/GNIX8140/CMS
+>> 主页：https://cms.server-xing.top \
+>> Gitee仓库：https://gitee.com/xing8140/cms \
+>> Github仓库：https://github.com/GNIX8140/CMS \
 >> 系统API接口文档：https://cms.server-xing.top/cms_api.html
