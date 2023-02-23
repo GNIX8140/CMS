@@ -66,6 +66,7 @@ async function scheduleQueryDatabase() {
 }
 // 处理ClassroomRecord计划任务
 async function handleClassroomRecordSchduled() {
+    // 未归还教室申请记录
     let recordList = await ClassroomRecordModel.findAll({
         where: {
             [Op.and]: [
@@ -90,46 +91,80 @@ async function handleClassroomRecordSchduled() {
             }
         ]
     });
-    recordList.forEach(item => {
+    recordList.forEach(async item => {
+        // // 超过结束时间
+        // if (moment(item.classroomRecord_end).isBefore(moment())) {
+        //     await sequelize.transaction(async (t) => {
+        //         let update = {};
+        //         // 已审核过
+        //         if (item.classroomRecord_status) {
+        //             update.classroomRecord_finish = true;
+        //         } else { // 未审核过
+        //             update.classroomRecord_status = true;
+        //             update.classroomRecord_pass = false;
+        //             update.classroomRecord_finish = true;
+        //         }
+        //         await ClassroomRecordModel.update(update, {
+        //             where: {
+        //                 classroomRecord_id: item.classroomRecord_id,
+        //             }
+        //         });
+        //     });
+        //     return;
+        // }
+        // 未超过结束时间
         let scheduleEndTime = moment(item.classroomRecord_end).format('YYYY M D H m s').split(' ');
         let endDatetime = new Date(scheduleEndTime[0], scheduleEndTime[1] - 1, scheduleEndTime[2], scheduleEndTime[3], scheduleEndTime[4], scheduleEndTime[5]);
-        let scheduleName, classroomRecordUpdate;
-        if (item.classroomRecord_status) {
-            scheduleName = `${item.user.user_uuid}`;
-            classroomRecordUpdate = {
-                classroomRecord_finish: true,
-            }
-        } else {
-            scheduleName = `${item.user.user_uuid}_auto`;
-            classroomRecordUpdate = {
-                classroomRecord_status: true,
-                classroomRecord_pass: false,
-                classroomRecord_finish: true,
-            }
-        }
-        schedule.scheduleJob(scheduleName, endDatetime, async () => {
-            await sequelize.transaction(async (t) => {
-                await ClassroomModel.update({
-                    classroom_available: true,
-                }, {
-                    where: {
-                        classroom_id: item.classroom.classroom_id,
-                    }
-                });
-                await UserModel.update({
-                    user_inApply: false,
-                }, {
-                    where: {
-                        user_id: item.user.user_id,
-                    }
-                });
-                await ClassroomRecordModel.update(classroomRecordUpdate, {
-                    where: {
-                        classroomRecord_id: item.classroomRecord_id,
-                    }
+        if (item.classroomRecord_status) { //已审核
+            // 定时任务 归还教室 更新用户申请状态 审核记录结束
+            schedule.scheduleJob(item.user.user_uuid, endDatetime, async () => {
+                await sequelize.transaction(async (t) => {
+                    await ClassroomModel.update({
+                        classroom_available: true,
+                    }, {
+                        where: {
+                            classroom_id: item.classroom.classroom_id,
+                        }
+                    });
+                    await UserModel.update({
+                        user_inApply: false,
+                    }, {
+                        where: {
+                            user_id: item.user.user_id,
+                        }
+                    });
+                    await ClassroomRecordModel.update({
+                        classroomRecord_finish: true,
+                    }, {
+                        where: {
+                            classroomRecord_id: item.classroomRecord_id,
+                        }
+                    });
                 });
             });
-        });
+        } else {
+            // 定时任务 更新用户申请状态 结束审核记录
+            schedule.scheduleJob(`${item.user.user_uuid}_auto`, endDatetime, async () => {
+                await sequelize.transaction(async (t) => {
+                    await UserModel.update({
+                        user_inApply: false,
+                    }, {
+                        where: {
+                            user_id: item.user.user_id,
+                        }
+                    });
+                    await ClassroomRecordModel.update({
+                        classroomRecord_status: true,
+                        classroomRecord_pass: false,
+                        classroomRecord_finish: true,
+                    }, {
+                        where: {
+                            classroomRecord_id: item.classroomRecord_id,
+                        }
+                    });
+                });
+            });
+        }
     });
     return '申请记录复核-完成'
 }

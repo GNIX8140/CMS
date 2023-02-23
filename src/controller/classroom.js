@@ -394,5 +394,37 @@ async function Delete(ctx) {
     ctx.success(null, '教室信息删除成功');
 }
 
+// 详细信息
+async function Detail(ctx) {
+    let admin = ctx.state.user;
+    if (!admin.admin_authority) return ctx.unauthorized();
+    let data = ctx.query;
+    let classroomDetail = await ClassroomModel.findOne({
+        include: [
+            {
+                attributes: ['classroomArea_name'],
+                model: ClassroomAreaModel,
+            },
+            {
+                attributes: ['classroomType_name'],
+                model: ClassroomTypeModel,
+            }
+        ],
+        where: {
+            classroom_id: data.id,
+        }
+    });
+    if (!classroomDetail) return ctx.dataError(null, '未查询到教室');
+    classroomDetail = {
+        number: classroomDetail.classroom_number,
+        area: classroomDetail.classroomArea.classroomArea_name,
+        type: classroomDetail.classroomType.classroomType_name,
+        capacity: classroomDetail.classroom_capacity,
+        authority: classroomDetail.classroom_authority,
+        available: classroomDetail.classroom_available,
+    }
+    return ctx.success(null, classroomDetail);
+}
 
-module.exports = { QueryList, Add, Update, Apply, Refunds, Delete }
+
+module.exports = { QueryList, Add, Update, Apply, Refunds, Delete, Detail }

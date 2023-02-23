@@ -173,11 +173,11 @@ async function QueryList(ctx) {
         ],
         include: [
             {
-                attributes: ['user_name'],
+                attributes: ['user_name', 'user_id'],
                 model: UserModel,
             },
             {
-                attributes: ['classroom_number'],
+                attributes: ['classroom_number', 'classroom_id'],
                 model: ClassroomModel,
                 paranoid: false,
             }
@@ -190,7 +190,9 @@ async function QueryList(ctx) {
         items.push({
             id: item.classroomRecord_id,
             uuid: item.classroomRecord_uuid,
+            userId: item.user.user_id,
             user: item.user.user_name,
+            classroomId: item.classroom.classroom_id,
             classroom: item.classroom.classroom_number,
             start: moment(item.classroomRecord_start).format('YYYY-MM-DD HH:mm:ss'),
             end: moment(item.classroomRecord_end).format('YYYY-MM-DD HH:mm:ss'),

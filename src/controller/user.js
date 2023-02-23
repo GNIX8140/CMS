@@ -25,12 +25,6 @@ async function Profile(ctx) {
         where: {
             user_id: user.user_id
         },
-        // include: [
-        //     {
-        //         attributes: ['stitute_name'],
-        //         model: StituteModel,
-        //     }
-        // ]
     });
     if (!userProfile) return ctx.dataError(null, '未查询到用户资料');
     userProfile = {
@@ -41,6 +35,33 @@ async function Profile(ctx) {
         authority: userProfile.user_authority,
     }
     return ctx.success(null, userProfile);
+}
+
+// 详细信息
+async function Detail(ctx) {
+    let admin = ctx.state.user;
+    if (!admin.admin_authority) return ctx.unauthorized();
+    let data = ctx.query;
+    let userDetail = await UserModel.findOne({
+        include: [
+            {
+                attributes: ['stitute_name'],
+                model: StituteModel,
+            }
+        ],
+        where: {
+            user_id: data.id,
+        }
+    });
+    if (!userDetail) return ctx.dataError(null, '未查询到用户资料');
+    userDetail = {
+        number: userDetail.user_number,
+        email: userDetail.user_email,
+        name: userDetail.user_name,
+        stitute: userDetail.stitute.stitute_name,
+        authority: UserTypeEnum[userDetail.user_authority],
+    }
+    return ctx.success(null, userDetail);
 }
 
 // 注册
@@ -119,4 +140,4 @@ async function Update(ctx) {
     return ctx.success(null, '用户资料更新成功');
 }
 
-module.exports = { Login, Profile, Register, ModifyPassword, Update }
+module.exports = { Login, Profile, Detail, Register, ModifyPassword, Update }

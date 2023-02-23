@@ -13,7 +13,7 @@
 
 > 前端工具： Vue3、Vite、Axios、Moment、Bootstrap V5、Echarts
 
-> 后端框架：Node.js、Koa、Sequelize、Passport、Validator
+> 后端框架：Node.js、Koa、Sequelize、Passport、Validator、node-schedule
 
 > 数据库：MariaDB、Redis
 

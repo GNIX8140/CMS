@@ -7,4 +7,5 @@ const router = new Router({ prefix: '/classroom' })
     .get('/apply', ClassroomController.Apply)
     .get('/refunds', ClassroomController.Refunds)
     .get('/delete', ClassroomController.Delete)
+    .get('/detail', ClassroomController.Detail)
 module.exports = router;

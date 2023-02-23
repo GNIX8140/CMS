@@ -5,6 +5,8 @@ const router = new Router({ prefix: '/user' })
     .get('/login', UserController.Login)
     // 资料
     .get('/profile', UserController.Profile)
+    // 详细信息
+    .get('/detail', UserController.Detail)
     // 注册
     .post('/register', UserController.Register)
     // 修改密码

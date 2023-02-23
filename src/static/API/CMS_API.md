@@ -206,6 +206,43 @@ GET /classroom/delete
 
 ### 返回数据结构
 
+## GET 查询详细信息
+
+GET /classroom/detail
+
+### 请求参数
+
+|名称|位置|类型|必选|说明|
+|---|---|---|---|---|
+|id|query|integer| 是 |教室ID|
+
+> 返回示例
+
+> 成功
+
+```json
+{
+  "status": 1,
+  "message": true,
+  "data": {
+    "number": "A01",
+    "area": "A区",
+    "type": "小型教室",
+    "capacity": 40,
+    "authority": false,
+    "available": false
+  }
+}
+```
+
+### 返回结果
+
+|状态码|状态码含义|说明|数据模型|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|成功|Inline|
+
+### 返回数据结构
+
 ## GET 查询教室列表
 
 GET /classroom/queryList
@@ -660,6 +697,42 @@ GET /user/login
   "data": {
     "type": "user",
     "name": "测试用户1"
+  }
+}
+```
+
+### 返回结果
+
+|状态码|状态码含义|说明|数据模型|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|成功|Inline|
+
+### 返回数据结构
+
+## GET 查询详细信息
+
+GET /user/detail
+
+### 请求参数
+
+|名称|位置|类型|必选|说明|
+|---|---|---|---|---|
+|id|query|integer| 是 |用户ID|
+
+> 返回示例
+
+> 成功
+
+```json
+{
+  "status": 1,
+  "message": true,
+  "data": {
+    "number": "123",
+    "email": "123@163.com",
+    "name": "测试用户1",
+    "stitute": "国际商学院",
+    "authority": "学生"
   }
 }
 ```
