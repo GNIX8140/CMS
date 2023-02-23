@@ -143,8 +143,36 @@ async function Update(ctx) {
         && data.available === oldClassroom.classroom_available) return ctx.dataError(null, '教室信息无更新');
     let classroomArea = await ClassroomAreaModel.findAll();
     let classroomType = await ClassroomTypeModel.findAll();
-    if (data.area + 1 > classroomArea.length) return ctx.dataError(null, '教室区域数据错误');
-    if (data.type + 1 > classroomType.length) return ctx.dataError(null, '教室类型数据错误');
+    if (data.area > classroomArea.length) return ctx.dataError(null, '教室区域数据错误');
+    if (data.type > classroomType.length) return ctx.dataError(null, '教室类型数据错误');
+    if (data.available) {
+        let recordList = await ClassroomRecordModel.findAll({
+            where: {
+                [Op.and]: [
+                    {
+                        createdAt: {
+                            [Op.between]: [moment().subtract(6, 'hours'), moment()],
+                        }
+                    },
+                    {
+                        classroomRecord_classroom: data.id,
+                    },
+                    {
+                        classroomRecord_status: true
+                    },
+                    {
+                        classroomRecord_pass: true,
+                    },
+                    {
+                        classroomRecord_finish: false,
+                    }
+                ]
+            }
+        });
+        if (recordList.length > 0) {
+            return ctx.dataError(null, '当前教室在使用中,请稍后更改');
+        }
+    }
     let updateResult = await ClassroomModel.update({
         classroom_area: data.area,
         classroom_number: data.number,
