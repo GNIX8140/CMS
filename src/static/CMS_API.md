@@ -1,9 +1,3 @@
-# College Classrooms Management System
-
----
-
-###### Version: 0.0.1
-
 ---
 title: CMS(College Classrooms Management System) v1.0.0
 language_tabs:

@@ -51,5 +51,6 @@ const ClassroomModel = sequelize.define('classroom', {
     tableName: 'cms_classroom',
     // Sequelize 时间戳
     timestamps: true,
+    paranoid: true,
 });
 module.exports = ClassroomModel;

@@ -40,7 +40,7 @@
                 <div class="input-group">
                     <span class="input-group-text">状态</span>
                     <select class="form-select" v-model="modalData.available">
-                        <option :value="true">可申请</option>
+                        <option :value="true">空闲</option>
                         <option :value="false">不可用</option>
                     </select>
                 </div>

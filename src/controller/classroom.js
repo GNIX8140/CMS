@@ -74,6 +74,34 @@ async function Add(ctx) {
     let isExist = await ClassroomModel.findOne({
         where: {
             classroom_number: data.number,
+        },
+        paranoid: false,
+    });
+    if (isExist) {
+        await sequelize.transaction(async (t) => {
+            await ClassroomModel.restore({
+                where: {
+                    classroom_id: isExist.classroom_id,
+                }
+            })
+            await ClassroomModel.update({
+                classroom_area: data.area,
+                classroom_number: data.number,
+                classroom_type: data.type,
+                classroom_capacity: data.capacity ? data.capacity : classroomType[data.type].classroomType_capacity,
+                classroom_authority: data.authority ? data.authority : false,
+                classroom_available: data.available ? data.available : false,
+            }, {
+                where: {
+                    classroom_id: isExist.classroom_id
+                }
+            });
+        });
+        return ctx.success(null, '教室信息添加成功');
+    }
+    isExist = await ClassroomModel.findOne({
+        where: {
+            classroom_number: data.number,
         }
     });
     if (isExist) return ctx.dataError(null, '教室编号已存在');
@@ -268,22 +296,16 @@ async function Refunds(ctx) {
     if (user.user_authority === undefined) return ctx.unauthorized();
     let data = ctx.query;
     let classroomRecordId = data.classroomRecordId;
-    await sequelize.transaction(async (t) => {
-        // 更新结束时间
-        await ClassroomRecordModel.update({
-            classroomRecord_end: moment(),
-        }, {
-            where: {
-                classroomRecord_id: classroomRecordId,
-            }
-        });
-        let userScheduleJob = schedule.scheduledJobs[user.user_uuid];
-        if (userScheduleJob == undefined) {
-            let record = await ClassroomRecordModel.findOne({
-                where: {
-                    classroomRecord_id: classroomRecordId,
-                }
-            });
+    if (!classroomRecordId) return ctx.dataError(null, '申请记录ID错误');
+    let record = await ClassroomRecordModel.findOne({
+        where: {
+            classroomRecord_id: classroomRecordId,
+        }
+    });
+    if (!record) return ctx.dataError(null, '未查询到申请记录');
+    let userScheduleJob = schedule.scheduledJobs[user.user_uuid];
+    if (userScheduleJob == undefined) {
+        await sequelize.transaction(async (t) => {
             await ClassroomModel.update({
                 classroom_available: true,
             }, {
@@ -305,11 +327,19 @@ async function Refunds(ctx) {
                     classroomRecord_id: classroomRecordId,
                 }
             });
-        } else {
-            // 执行退还操作
-            userScheduleJob.job();
-            // 取消计划任务
-            userScheduleJob.cancel();
+        });
+    } else {
+        // 执行退还操作
+        userScheduleJob.job();
+        // 取消计划任务
+        userScheduleJob.cancel();
+    }
+    // 更新结束时间
+    await ClassroomRecordModel.update({
+        classroomRecord_end: moment(),
+    }, {
+        where: {
+            classroomRecord_id: classroomRecordId,
         }
     });
     ctx.success(null, '教室退还成功');

@@ -29,7 +29,7 @@
                 <span>编号</span>
                 <span>区域</span>
                 <span>类型</span>
-                <span class="pc">容量</span>
+                <span class="pc">容纳</span>
                 <span>状态</span>
                 <span class="pc">审核</span>
                 <span>操作</span>
@@ -40,7 +40,7 @@
                     <span>{{ areaList[item.area - 1].name }}</span>
                     <span>{{ typeList[item.type - 1].name }}</span>
                     <span class="pc">{{ item.capacity }}</span>
-                    <span>{{ item.available ? '空闲' : '使用中' }}</span>
+                    <span>{{ item.available ? '空闲' : '不可用' }}</span>
                     <span class="pc">{{ item.authority ? '需要审核' : '无需审核' }}</span>
                     <span v-if="type == 'classroom'">
                         <button class="btn btn-outline-primary"

@@ -72,7 +72,7 @@ onMounted(() => {
     queryDashboard();
     interval = setInterval(() => {
         queryDashboard();
-    }, 1000 * 10);
+    }, 1000 * 20);
     window.addEventListener('resize', () => {
         active.resize();
         inApply.resize();

@@ -179,6 +179,7 @@ async function QueryList(ctx) {
             {
                 attributes: ['classroom_number'],
                 model: ClassroomModel,
+                paranoid: false,
             }
         ],
         offset: offset,
@@ -231,6 +232,7 @@ async function UserQuery(ctx) {
             {
                 attributes: ['classroom_number'],
                 model: ClassroomModel,
+                paranoid: false
             },
         ],
         order: [
