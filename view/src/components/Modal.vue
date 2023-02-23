@@ -120,7 +120,7 @@ function confirmModify() {
 }
 
 .modal-main {
-    width: 70%;
+    width: 80%;
     height: auto;
     background-color: rgb(250, 250, 250);
     border-radius: 16px;

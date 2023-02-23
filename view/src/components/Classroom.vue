@@ -196,6 +196,11 @@ function logout() {
     font-weight: 700;
     font-size: 1.3rem;
     margin-left: 12px;
+    transition: all 0.1s linear;
+}
+
+.classroom-title .title-span:hover {
+    font-size: 1.4rem;
 }
 
 .classroom-title .title-user {

@@ -1,5 +1,7 @@
 <template>
     <div class="record-list-body">
+        <DetailModal v-if="detail.show" :type="detail.type" :id="detail.id" @closeDetail="closeDetail"
+            @showAlertMsg="detailMsg" />
         <div class="list-table">
             <div class="list-params">
                 <div class="input-group">
@@ -22,15 +24,17 @@
             </div>
             <div class="table" v-if="recordList">
                 <div class="row" v-for="(item, index) in recordList.items">
-                    <span>{{ item.classroom }}</span>
-                    <span>{{ item.user }}</span>
+                    <span class="detail" @click="showDetail('classroom', item.classroomId)">{{ item.classroom }}</span>
+                    <span class="detail" @click="showDetail('user', item.userId)">{{ item.user }}</span>
                     <span>{{ item.start }}</span>
                     <span>{{ item.end }}</span>
                     <span>{{ item.status ? '已审核' : '未审核' }}</span>
                     <span class="pc">{{ item.pass ? '通过' : '未通过' }}</span>
                     <span>
-                        <button class="btn btn-outline-success" v-show="!item.status" @click="handleApply(item.id, true)">同意</button>
-                        <button class="btn btn-outline-danger" v-show="!item.status" @click="handleApply(item.id, false)">拒绝</button>
+                        <button class="btn btn-outline-success" v-show="!item.status"
+                            @click="handleApply(item.id, true)">同意</button>
+                        <button class="btn btn-outline-danger" v-show="!item.status"
+                            @click="handleApply(item.id, false)">拒绝</button>
                         <div v-show="item.finish">已结束</div>
                         <div v-show="item.status && !item.finish">使用中</div>
                     </span>
@@ -49,10 +53,16 @@
 <script setup>
 import axios from 'axios';
 import { ref, onMounted } from 'vue'
+import DetailModal from './RecordDetail.vue'
 const emits = defineEmits(['showAlertMsg']);
 const recordList = ref();
 const pageInput = ref();
 const complete = ref('');
+const detail = ref({
+    show: false,
+    type: null,
+    id: null,
+})
 onMounted(() => {
     queryRecordList(1, 10);
 });
@@ -100,6 +110,21 @@ function handleApply(classroomRecordId, status) {
             queryRecordList(recordList.value.num, 10);
         }, 1000 * 0.1);
     })
+}
+function showDetail(type, id) {
+    if (type == undefined) return emits('showAlertMsg', '类型错误');
+    if (id == undefined) return emits('showAlertMsg', 'ID错误');
+    detail.value.type = type;
+    detail.value.id = id;
+    detail.value.show = true;
+}
+function closeDetail() {
+    detail.value.show = false;
+    detail.value.type = null;
+    detail.value.id = null;
+}
+function detailMsg(msg) {
+    emits('showAlertMsg', msg);
 }
 </script>
 
@@ -269,6 +294,7 @@ function handleApply(classroomRecordId, status) {
 
 }
 
+
 .list-table .table .row span {
     width: calc(100% / 7);
     white-space: nowrap;
@@ -278,6 +304,10 @@ function handleApply(classroomRecordId, status) {
     flex-direction: row;
     justify-content: center;
     align-items: center;
+}
+
+.list-table .table .row .detail {
+    text-decoration: underline;
 }
 
 .list-table .table .row .btn {

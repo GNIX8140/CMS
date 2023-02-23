@@ -151,22 +151,4 @@
     color: rgba(69, 127, 202, 1);
     background-image: linear-gradient(to bottom right, rgba(100, 179, 244, 0.2), rgba(194, 229, 156, 0.2));
 }
-
-/* .btn-apply {
-    border: 2px solid rgba(86, 145, 200, 0.8);
-    color: rgba(69, 127, 202, 1);
-    background-image: linear-gradient(to bottom right, rgba(100, 179, 244, 0.2), rgba(194, 229, 156, 0.2));
-}
-
-.btn-dashboard {
-    border: 2px solid rgba(178, 69, 146, 0.8);
-    color: rgba(178, 69, 146, 1);
-    background-image: linear-gradient(to bottom right, rgba(237, 91, 194, 0.2), rgba(234, 205, 163, 0.3));
-}
-
-.btn-control {
-    border: 2px solid rgba(152, 79, 212, 0.8);
-    color: rgba(152, 79, 212, 1);
-    background-image: linear-gradient(to bottom right, rgba(17, 67, 87, 0.2), rgba(242, 148, 146, 0.2));
-} */
 </style>

@@ -226,6 +226,11 @@ function logout() {
     font-weight: 700;
     font-size: 1.3rem;
     margin-left: 12px;
+    transition: all 0.1s linear;
+}
+
+.control-title .title-span:hover {
+    font-size: 1.4rem;
 }
 
 .control-title .title-user {

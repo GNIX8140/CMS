@@ -338,13 +338,13 @@ function showAlertMsg(msg) {
 }
 
 .login-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
     display: flex;
     flex-direction: row;
     align-items: center;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.26);
-    background-color: rgba(255, 255, 255, 0.496);
 }
 
 .login-nav a {
@@ -361,6 +361,11 @@ function showAlertMsg(msg) {
     font-weight: 700;
     font-size: 1.3rem;
     margin-left: 12px;
+    transition: all 0.1s linear;
+}
+
+.login-nav .title-span:hover {
+    font-size: 1.4rem;
 }
 
 .login-body {
