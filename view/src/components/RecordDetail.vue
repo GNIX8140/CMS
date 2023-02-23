@@ -60,11 +60,11 @@ import axios from 'axios';
 const props = defineProps(['type', 'id']);
 const emits = defineEmits(['closeDetail', 'detailMsg']);
 const detailData = ref();
-onMounted(() => {
-    queryDetail();
+onMounted(async() => {
+    await queryDetail();
 });
-function queryDetail() {
-    axios.get(`${window.ServerURL}/${props.type}/detail`, {
+async function queryDetail() {
+    await axios.get(`${window.ServerURL}/${props.type}/detail`, {
         params: {
             id: props.id
         }
@@ -82,7 +82,7 @@ function queryDetail() {
     }
 
     .info-group .key {
-        width: 50px;
+        width: 70px;
     }
 
     .info-group .value {

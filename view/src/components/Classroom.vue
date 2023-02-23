@@ -104,7 +104,7 @@ function showAlertMsg(msg) {
 function logout() {
     axios.get(`${window.ServerURL}/logout`);
     route.push({
-        path: '/login',
+        path: '/',
     });
 }
 </script>

@@ -54,11 +54,11 @@
                     <i class="las la-th-list"></i>教室类型</button>
                 <button class="btn" :class="{ 'menu-active': mainMenu == 'stitute' }" @click="switchMainMenu('stitute')">
                     <i class="las la-university"></i>学院信息</button>
-                <button class="btn" :class="{ 'menu-active': mainMenu == 'profile' }" @click="switchMainMenu('profile')">
-                    <i class="las la-id-badge"></i>个人资料</button>
                 <button class="btn" :class="{ 'menu-active': mainMenu == 'addClassroom' }"
                     @click="switchMainMenu('addClassroom')">
                     <i class="las la-plus-circle"></i>添加教室</button>
+                <button class="btn" :class="{ 'menu-active': mainMenu == 'profile' }" @click="switchMainMenu('profile')">
+                    <i class="las la-id-badge"></i>个人资料</button>
                 <button class="btn" :class="{ 'menu-active': mainMenu == 'password' }" @click="switchMainMenu('password')">
                     <i class="las la-key"></i>修改密码</button>
                 <button class="btn" :class="{ 'menu-active': mainMenu == 'addAdmin' }" @click="switchMainMenu('addAdmin')">
@@ -70,8 +70,8 @@
                 <AreaList v-if="mainMenu == 'area'" @showAlertMsg="showAlertMsg" />
                 <TypeList v-if="mainMenu == 'type'" @showAlertMsg="showAlertMsg" />
                 <StituteList v-if="mainMenu == 'stitute'" @showAlertMsg="showAlertMsg" />
-                <AdminProfile v-if="mainMenu == 'profile'" @showAlertMsg="showAlertMsg" />
                 <AddClassroom v-if="mainMenu == 'addClassroom'" @showAlertMsg="showAlertMsg" />
+                <AdminProfile v-if="mainMenu == 'profile'" @showAlertMsg="showAlertMsg" />
                 <Password v-if="mainMenu == 'password'" :type="'admin'" @showAlertMsg="showAlertMsg" />
                 <AddAdmin v-if="mainMenu == 'addAdmin'" @showAlertMsg="showAlertMsg" />
             </div>
@@ -88,8 +88,8 @@ import ControlRecord from './ControlRecord.vue'
 import AreaList from './AreaList.vue'
 import TypeList from './TypeList.vue'
 import StituteList from './StituteList.vue'
-import AdminProfile from './AdminProfile.vue'
 import AddClassroom from './AddClassroom.vue'
+import AdminProfile from './AdminProfile.vue'
 import Password from './Password.vue'
 import AddAdmin from './AddAdmin.vue'
 axios.defaults.withCredentials = true;
@@ -135,7 +135,7 @@ function showAlertMsg(msg) {
 function logout() {
     axios.get(`${window.ServerURL}/logout`);
     route.push({
-        path: '/login',
+        path: '/',
     });
 }
 </script>

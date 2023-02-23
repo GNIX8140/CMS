@@ -16,7 +16,7 @@
             <div class="description">
                 <span>教室</span>
                 <span>用户</span>
-                <span>开始时间</span>
+                <span class="pc">开始时间</span>
                 <span>结束时间</span>
                 <span>状态</span>
                 <span class="pc">审核</span>
@@ -26,7 +26,7 @@
                 <div class="row" v-for="(item, index) in recordList.items">
                     <span class="detail" @click="showDetail('classroom', item.classroomId)">{{ item.classroom }}</span>
                     <span class="detail" @click="showDetail('user', item.userId)">{{ item.user }}</span>
-                    <span>{{ item.start }}</span>
+                    <span class="pc">{{ item.start }}</span>
                     <span>{{ item.end }}</span>
                     <span>{{ item.status ? '已审核' : '未审核' }}</span>
                     <span class="pc">{{ item.pass ? '通过' : '未通过' }}</span>
@@ -141,7 +141,7 @@ function detailMsg(msg) {
     }
 
     .list-table .table .row span {
-        width: calc(100% / 6) !important;
+        width: calc(100% / 5) !important;
     }
 
     .list-table .table .row .btn {

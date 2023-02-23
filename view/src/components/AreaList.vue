@@ -38,7 +38,7 @@
                     </span>
                 </div>
                 <div class="row" v-show="showAddInput">
-                    <span></span>
+                    <span class="pc"></span>
                     <span><input class="form-control" type="text" ref="addInputName"></span>
                     <span>
                         <button class="btn btn-outline-success" @click="addArea">确认</button>

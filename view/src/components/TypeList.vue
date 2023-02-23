@@ -44,7 +44,7 @@
                     </span>
                 </div>
                 <div class="row" v-show="showAddInput">
-                    <span></span>
+                    <span class="pc"></span>
                     <span><input class="form-control" type="text" ref="addInputName"></span>
                     <span><input class="form-control" type="text" ref="addInputCapacity"></span>
                     <span>

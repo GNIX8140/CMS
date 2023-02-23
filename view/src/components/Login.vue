@@ -197,7 +197,9 @@ async function register() {
     if (data.password == null || data.password.trim().length == 0) return showAlertMsg('请输入密码');
     if (data.stitute == null) return showAlertMsg('请选择学院');
     if (data.identity == null) return showAlertMsg('请选择身份');
-    let res = axios.post(`${window.ServerURL}/user/register`, {
+    let reg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+    if (!reg.test(data.email)) return showAlertMsg('请输入正确格式邮箱');
+    axios.post(`${window.ServerURL}/user/register`, {
         number: data.number,
         email: data.email,
         name: data.name,
@@ -234,7 +236,6 @@ function showAlertMsg(msg) {
 <style scoped>
 @media screen and (max-width: 600px) {
     .login-nav {
-        height: 68px;
         padding: 0px 12px;
     }
 
@@ -282,7 +283,6 @@ function showAlertMsg(msg) {
 
 @media screen and (min-width: 600px) and (max-width: 1200px) {
     .login-nav {
-        height: 68px;
         padding: 0px 18px;
     }
 
@@ -313,7 +313,6 @@ function showAlertMsg(msg) {
 
 @media screen and (min-width: 1200px) {
     .login-nav {
-        height: 68px;
         padding: 0px 26px;
     }
 
@@ -338,10 +337,8 @@ function showAlertMsg(msg) {
 }
 
 .login-nav {
-    position: fixed;
-    top: 0;
-    left: 0;
     width: 100%;
+    height: 52px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -353,19 +350,19 @@ function showAlertMsg(msg) {
 }
 
 .login-nav img {
-    width: 48px;
-    height: 48px;
+    width: 36px;
+    height: 36px;
 }
 
 .login-nav .title-span {
     font-weight: 700;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     margin-left: 12px;
     transition: all 0.1s linear;
 }
 
 .login-nav .title-span:hover {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
 }
 
 .login-body {
@@ -391,7 +388,7 @@ function showAlertMsg(msg) {
 
 .login-main {
     widows: 100%;
-    height: calc(100vh - 68px);
+    height: calc(100vh - 52px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -485,4 +482,5 @@ function showAlertMsg(msg) {
 
 .button-group button:hover {
     padding: 8px 52px;
-}</style>
+}
+</style>
