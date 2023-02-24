@@ -20,6 +20,7 @@
             </div>
         </div>
         <div class="list-add">
+            <span>学院信息列表</span>
             <button class="btn btn-outline-success" @click="showAddInput = true">添加学院</button>
         </div>
         <div class="list-table">
@@ -235,14 +236,25 @@ function deleteConfirm(id) {
 
 .list-add {
     display: flex;
-    justify-content: end;
+    justify-content: space-between;
     align-items: center;
+    padding: 0px 4px;
+}
+
+.list-add span {
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.list-add button {
+    padding: 6px 32px;
 }
 
 .list-table {
     border: 1px solid rgba(0, 0, 0, 0.2);
     margin-top: 16px;
-    border-radius: 18px;
+    border-radius: 8px;
     padding: 4px 12px;
     display: flex;
     flex-direction: column;
@@ -359,7 +371,7 @@ function deleteConfirm(id) {
 }
 
 .modal-btn-group button {
-    padding: 6px 28px;
-    margin: 0px 8px;
+    padding: 6px 22px;
+    margin: 0px 6px;
 }
 </style>

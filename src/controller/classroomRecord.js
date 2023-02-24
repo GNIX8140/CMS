@@ -228,7 +228,13 @@ async function UserQuery(ctx) {
     let offset = (page - 1) * length;
     let where = {};
     where.classroomRecord_user = user.user_id;
-    if (data.complete) where.classroomRecord_status = parseInt(data.complete);
+    let complete = parseInt(data.complete);
+    if (complete == 0 || complete == 1) where.classroomRecord_status = complete;
+    if (complete == 2) {
+        where.classroomRecord_status = true;
+        where.classroomRecord_pass = true;
+        where.classroomRecord_finish = false;
+    }
     let { count, rows } = await ClassroomRecordModel.findAndCountAll({
         include: [
             {

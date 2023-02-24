@@ -12,7 +12,7 @@
                     <option v-for="(item, index) in areaList" :value="item.id">{{ item.name }}</option>
                 </select>
             </div>
-            <div class="input-group">
+            <div class="input-group mx-2">
                 <span class="input-group-text">类型</span>
                 <select class="form-select" v-model="bind.type" @change="changeType">
                     <option value="null" selected>全部</option>
@@ -131,7 +131,7 @@ function jumpPage() {
         pageInput.value.value = null;
         return emits('showAlertMsg', '页数超出范围');
     }
-    queryClassroomList(classroomList.value.num, 10, bind.value.area, bind.value.type, bind.value.number)
+    queryClassroomList(num, 10, bind.value.area, bind.value.type, bind.value.number)
     pageInput.value.value = null;
 }
 function queryPreviousPage() {
@@ -145,14 +145,17 @@ function queryNextPage() {
     queryClassroomList(classroomList.value.num, 10, bind.value.area, bind.value.type, bind.value.number)
 }
 function changeArea() {
+    classroomList.value.num = 1;
     queryClassroomList(classroomList.value.num, 10, bind.value.area, bind.value.type, bind.value.number)
 }
 function changeType() {
+    classroomList.value.num = 1;
     queryClassroomList(classroomList.value.num, 10, bind.value.area, bind.value.type, bind.value.number)
 }
 function queryNumber() {
     bind.value.area = null;
     bind.value.type = null;
+    classroomList.value.num = 1;
     queryClassroomList(classroomList.value.num, 10, bind.value.area, bind.value.type, bind.value.number)
 }
 function applyClassroom(applyLength) {
@@ -353,7 +356,7 @@ function deleteConfirm(id) {
 .list-table {
     border: 1px solid rgba(0, 0, 0, 0.2);
     margin-top: 16px;
-    border-radius: 18px;
+    border-radius: 8px;
     padding: 4px 12px;
     display: flex;
     flex-direction: column;

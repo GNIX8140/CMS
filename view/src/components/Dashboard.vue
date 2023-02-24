@@ -6,7 +6,7 @@
         <div class="dashboard-title">
             <img src="../assets/logo.svg">
             <router-link to="/"><span class="title-span">数据面板</span></router-link>
-            <div v-if="dashboardData" class="time pc">更新时间: {{ dashboardData.time }}</div>
+            <div v-if="dashboardData" class="time">更新时间: {{ dashboardData.time }}</div>
         </div>
         <div class="dashboard-pc">
             <div class="panel-left">
@@ -396,8 +396,8 @@ function showAlertMsg(msg) {
 
 <style scoped>
 @media screen and (max-width: 600px) {
-    .pc {
-        display: none;
+    .dashboard-title .time {
+        font-size: 0.7rem !important;
     }
 
     .dashboard-title {

@@ -189,4 +189,8 @@ async function queryDetail() {
     width: 100%;
     font-weight: 500;
 }
+
+.detail-main button {
+    padding: 6px 26px;
+}
 </style>

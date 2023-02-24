@@ -1,5 +1,16 @@
 <template>
     <div class="record-list-body">
+        <div class="list-params">
+            <div class="input-group">
+                <span class="input-group-text">筛选</span>
+                <select class="form-select" v-model="complete" @change="queryRecordList(1, 10)">
+                    <option value="">全部</option>
+                    <option value="0">未审核</option>
+                    <option value="1">已审核</option>
+                    <option value="2">使用中</option>
+                </select>
+            </div>
+        </div>
         <div class="list-table">
             <div class="description">
                 <span>教室</span>
@@ -41,15 +52,18 @@ import { ref, onMounted } from 'vue'
 const emits = defineEmits(['showAlertMsg']);
 const recordList = ref();
 const pageInput = ref();
+const complete = ref('');
 onMounted(() => {
     queryRecordList(1, 10);
 });
 function queryRecordList(page, length) {
+    let params = {
+        page: page,
+        length: length,
+    }
+    if (complete.value !== '') params.complete = complete.value;
     axios.get(`${window.ServerURL}/classroomRecord/userQuery`, {
-        params: {
-            page: page,
-            length: length
-        }
+        params: params
     }).then(res => {
         if (res.data.status != 1) return emits('showAlertMsg', res.data.detail);
         recordList.value = res.data.data;
@@ -203,7 +217,7 @@ function queryNextPage() {
 .list-table {
     border: 1px solid rgba(0, 0, 0, 0.2);
     margin-top: 16px;
-    border-radius: 18px;
+    border-radius: 8px;
     padding: 4px 12px;
     display: flex;
     flex-direction: column;

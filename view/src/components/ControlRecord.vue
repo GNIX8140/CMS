@@ -2,17 +2,17 @@
     <div class="record-list-body">
         <DetailModal v-if="detail.show" :type="detail.type" :id="detail.id" @closeDetail="closeDetail"
             @showAlertMsg="detailMsg" />
-        <div class="list-table">
-            <div class="list-params">
-                <div class="input-group">
-                    <span class="input-group-text">筛选</span>
-                    <select class="form-select" v-model="complete" @change="queryRecordList(recordList.num, 10)">
-                        <option value="">全部</option>
-                        <option value="0">未审核</option>
-                        <option value="1">已审核</option>
-                    </select>
-                </div>
+        <div class="list-params">
+            <div class="input-group">
+                <span class="input-group-text">筛选</span>
+                <select class="form-select" v-model="complete" @change="queryRecordList(1, 10)">
+                    <option value="">全部</option>
+                    <option value="0">未审核</option>
+                    <option value="1">已审核</option>
+                </select>
             </div>
+        </div>
+        <div class="list-table">
             <div class="description">
                 <span>教室</span>
                 <span>用户</span>
@@ -72,7 +72,6 @@ function queryRecordList(page, length) {
         length: length
     }
     if (complete.value !== '') params.complete = complete.value;
-
     axios.get(`${window.ServerURL}/classroomRecord/queryList`, {
         params: params
     }).then(res => {
@@ -130,7 +129,6 @@ function detailMsg(msg) {
 
 <style scoped>
 @media screen and (max-width: 600px) {
-
     .pc {
         display: none !important;
     }
@@ -247,14 +245,12 @@ function detailMsg(msg) {
 
 .list-params {
     width: 100%;
-    padding: 12px 0px;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.2);
 }
 
 .list-table {
     border: 1px solid rgba(0, 0, 0, 0.2);
     margin-top: 16px;
-    border-radius: 18px;
+    border-radius: 8px;
     padding: 4px 12px;
     display: flex;
     flex-direction: column;

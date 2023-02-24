@@ -24,6 +24,7 @@
             </div>
         </div>
         <div class="list-add">
+            <span>教室类型列表</span>
             <button class="btn btn-outline-success" @click="showAddInput = true">添加类型</button>
         </div>
         <div class="list-table">
@@ -167,23 +168,6 @@ function deleteConfirm(id) {
     .list-button-group button {
         font-size: 0.8rem;
     }
-
-    .list-button-group * {
-        margin: 0px 8px;
-    }
-
-    .list-button-group button {
-        padding: 6px 18px;
-    }
-
-    .list-button-group button:hover {
-        padding: 6px 24px;
-    }
-
-    .list-button-group input {
-        width: 72px;
-        padding: 2px 0px;
-    }
 }
 
 @media screen and (min-width: 600px) and (max-width: 1200px) {
@@ -195,23 +179,6 @@ function deleteConfirm(id) {
     .list-table .table .row *,
     .list-button-group button {
         font-size: 0.9rem;
-    }
-
-    .list-button-group * {
-        margin: 0px 16px;
-    }
-
-    .list-button-group button {
-        padding: 6px 26px;
-    }
-
-    .list-button-group button:hover {
-        padding: 6px 32px;
-    }
-
-    .list-button-group input {
-        width: 80px;
-        padding: 2px 0px;
     }
 }
 
@@ -225,23 +192,6 @@ function deleteConfirm(id) {
     .list-button-group button {
         font-size: 1rem;
     }
-
-    .list-button-group * {
-        margin: 0px 24px;
-    }
-
-    .list-button-group button {
-        padding: 6px 38px;
-    }
-
-    .list-button-group button:hover {
-        padding: 6px 42px;
-    }
-
-    .list-button-group input {
-        width: 120px;
-        padding: 4px 0px;
-    }
 }
 
 .type-list-body {
@@ -250,14 +200,25 @@ function deleteConfirm(id) {
 
 .list-add {
     display: flex;
-    justify-content: end;
+    justify-content: space-between;
     align-items: center;
+    padding: 0px 4px;
+}
+
+.list-add span {
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.list-add button {
+    padding: 6px 32px;
 }
 
 .list-table {
     border: 1px solid rgba(0, 0, 0, 0.2);
     margin-top: 16px;
-    border-radius: 18px;
+    border-radius: 8px;
     padding: 4px 12px;
     display: flex;
     flex-direction: column;
@@ -374,7 +335,7 @@ function deleteConfirm(id) {
 }
 
 .modal-btn-group button {
-    padding: 6px 28px;
-    margin: 0px 8px;
+    padding: 6px 22px;
+    margin: 0px 6px;
 }
 </style>
